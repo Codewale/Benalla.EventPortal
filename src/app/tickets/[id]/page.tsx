@@ -5,16 +5,20 @@ import React from "react";
 async function getTicket(id: string) {
   const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
   // Use relative path since API and UI are on the same origin in Next.js
-    return await axios.get(`${baseUrl}/api/tickets/${id}`);
+  return await axios.get(`${baseUrl}/api/tickets/${id}`);
 }
 
-export default async function TicketPage({ params}) {
+export default async function TicketPage({ params }) {
   let ticketDetails;
-  
-  try{
-   ticketDetails = await getTicket(params.id);
-  }catch (error) {
-    return <div className="text-center mt-10 text-red-500">Error loading ticket.</div>;
+
+  try {
+    ticketDetails = await getTicket(params.id);
+  } catch (error) {
+    return (
+      <div className="text-center mt-10 text-red-500">
+        Error loading ticket.
+      </div>
+    );
   }
 
   // Map API response fields
@@ -25,12 +29,8 @@ export default async function TicketPage({ params}) {
   const promoter = ticketDetails.data.promoter;
   const location = ticketDetails.data.location;
 
-  const eventImage = event?.image
-    ? `data:image/png;base64,${event.image}`
-    : "";
-  const eventLogo = event?.logo
-    ? `data:image/png;base64,${event.logo}`
-    : "";
+  const eventImage = event?.image ? `data:image/png;base64,${event.image}` : "";
+  const eventLogo = event?.logo ? `data:image/png;base64,${event.logo}` : "";
   const promoterLogo = promoter?.logo
     ? `data:image/png;base64,${promoter.logo}`
     : "";
@@ -39,27 +39,34 @@ export default async function TicketPage({ params}) {
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">
       <div className="bg-white shadow-2xl rounded-2xl max-w-2xl w-full p-10 md:p-12 lg:p-14 m-4">
         <div className="flex items-center mb-6">
-          <img
-            src={eventLogo}
-            alt="Event Logo"
-            className="w-16 h-16 rounded-full mr-4 border"
-          />
+          {eventImage && (
+            <img
+              src={eventLogo}
+              alt="Event Logo"
+              className="w-16 h-16 rounded-full mr-4 border"
+            />
+          )}
           <div>
-            <h1 className="text-2xl font-bold">{event?.name || ticket?.name}</h1>
-            <p className="text-gray-500">{event?.startDate?.slice(0, 10) || ticketType?.validFrom?.slice(0, 10)}</p>
+            <h1 className="text-2xl font-bold">
+              {event?.name || ticket?.name}
+            </h1>
+            <p className="text-gray-500">
+              {event?.startDate?.slice(0, 10) ||
+                ticketType?.validFrom?.slice(0, 10)}
+            </p>
           </div>
         </div>
-        <img
-          src={eventImage}
-          alt="Event"
-          className="w-full h-48 object-cover rounded-lg mb-6"
-        />
+        {eventImage && (
+          <img
+            src={eventImage}
+            alt="Event"
+            className="w-full h-48 object-cover rounded-lg mb-6"
+          />
+        )}
         <div className="grid grid-cols-2 gap-4 mb-6">
           <div>
             <div className="font-semibold text-gray-700">Contact</div>
-            <div className="text-gray-900">
-              {contact?.fullname || "-"}
-            </div>
+            <div className="text-gray-900">{contact?.fullname || "-"}</div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Remaining Scans</div>
@@ -85,31 +92,48 @@ export default async function TicketPage({ params}) {
           </div>
           <div>
             <div className="font-semibold text-gray-700">Location Address</div>
-            <div className="text-gray-900">{location?.addressLine1 || "-"}{location?.addressLine2 ? `, ${location.addressLine2}` : ""}</div>
+            <div className="text-gray-900">
+              {location?.addressLine1 || "-"}
+              {location?.addressLine2 ? `, ${location.addressLine2}` : ""}
+            </div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Cafe Hours</div>
-            <div className="text-gray-900">{event?.openingHours?.cafe || "-"}</div>
+            <div className="text-gray-900">
+              {event?.openingHours?.cafe || "-"}
+            </div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Fuel Shop Hours</div>
-            <div className="text-gray-900">{event?.openingHours?.fuelShop || "-"}</div>
+            <div className="text-gray-900">
+              {event?.openingHours?.fuelShop || "-"}
+            </div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Office Branding</div>
-            <div className="text-gray-900">{event?.openingHours?.officeBranding || "-"}</div>
+            <div className="text-gray-900">
+              {event?.openingHours?.officeBranding || "-"}
+            </div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Office Hours</div>
-            <div className="text-gray-900">{event?.openingHours?.office || "-"}</div>
+            <div className="text-gray-900">
+              {event?.openingHours?.office || "-"}
+            </div>
           </div>
           <div>
             <div className="font-semibold text-gray-700">Tyre Hours</div>
-            <div className="text-gray-900">{event?.openingHours?.tyres || "-"}</div>
+            <div className="text-gray-900">
+              {event?.openingHours?.tyres || "-"}
+            </div>
           </div>
           <div>
-            <div className="font-semibold text-gray-700">Fuel/Tyre Branding</div>
-            <div className="text-gray-900">{event?.openingHours?.tyreBranding || "-"}</div>
+            <div className="font-semibold text-gray-700">
+              Fuel/Tyre Branding
+            </div>
+            <div className="text-gray-900">
+              {event?.openingHours?.tyreBranding || "-"}
+            </div>
           </div>
         </div>
         <div className="mb-6">
