@@ -1,7 +1,6 @@
 import axios from "axios";
 import React from "react";
 
-
 import ChatModal from "./modal";
 
 // Helper to fetch ticket by id from the API
@@ -154,8 +153,7 @@ export default async function TicketPage({ params }) {
         {/* Sponsors section can be added here if available in API */}
         
       </div>
-
-      <ChatModal />
+       <ChatModal />
     </div>
   );
 }
