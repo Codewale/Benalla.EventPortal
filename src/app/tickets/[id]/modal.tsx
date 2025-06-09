@@ -1,9 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-
 import { CiChat1 } from "react-icons/ci";
-
 
 export default function ChatModal() {
     const [modalOpen, setModalOpen] = useState(false);
