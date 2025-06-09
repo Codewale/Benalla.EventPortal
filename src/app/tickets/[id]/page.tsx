@@ -1,6 +1,9 @@
 import axios from "axios";
 import React from "react";
 
+
+import ChatModal from "./modal";
+
 // Helper to fetch ticket by id from the API
 async function getTicket(id: string) {
   const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
@@ -147,8 +150,12 @@ export default async function TicketPage({ params }) {
             <span className="text-gray-900">{promoter?.name || "-"}</span>
           </div>
         </div>
+      
         {/* Sponsors section can be added here if available in API */}
+        
       </div>
+
+      <ChatModal />
     </div>
   );
 }
