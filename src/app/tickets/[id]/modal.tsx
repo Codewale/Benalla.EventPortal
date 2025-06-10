@@ -1,15 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiChat1 } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
+import axios from "axios";
 
-export default function ChatModal() {
+async function getChats(id: string) {
+  const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+  // Use relative path since API and UI are on the same origin in Next.js
+  return await axios.get(`${baseUrl}/api/ask-adam/${id}`);
+}
+
+export default function ChatModal({ params }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleToggleModal = () => {
     setModalOpen((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    async function getQues() {
+      try {
+        const resp = await getChats(params.id);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getQues();
+  }, []);
 
   return (
     <>

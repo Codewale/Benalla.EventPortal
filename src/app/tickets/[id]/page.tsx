@@ -10,9 +10,10 @@ async function getTicket(id: string) {
   return await axios.get(`${baseUrl}/api/tickets/${id}`);
 }
 
+
+
 export default async function TicketPage({ params }) {
   let ticketDetails;
-
   try {
     ticketDetails = await getTicket(params.id);
   } catch (error) {
@@ -24,6 +25,7 @@ export default async function TicketPage({ params }) {
   }
 
   // Map API response fields
+
   const ticket = ticketDetails.data.ticket;
   const ticketType = ticketDetails.data.ticketType;
   const contact = ticketDetails.data.contact;
@@ -153,7 +155,7 @@ export default async function TicketPage({ params }) {
         {/* Sponsors section can be added here if available in API */}
         
       </div>
-       <ChatModal />
+       <ChatModal params={params}/>
     </div>
   );
 }
