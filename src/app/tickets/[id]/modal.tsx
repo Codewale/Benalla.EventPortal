@@ -31,18 +31,18 @@ export default function ChatModal() {
                 </div>
 
                 <div className="flex flex-col mt-4 space-y-4">
-                  <div className='flex justify-end'>
+                  <div className='flex justify-start'>
                     <textarea
                       readOnly
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-red-200" 
+                      className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-red-200" 
                       placeholder=""
                     />
                   </div>
 
-                  <div className='flex justify-start'>
+                  <div className='flex justify-end'>
                     <textarea
                       readOnly
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-blue-300"
+                      className="mt-1 block w-2/3 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-blue-300"
                       placeholder=""
                     />
                   </div>
