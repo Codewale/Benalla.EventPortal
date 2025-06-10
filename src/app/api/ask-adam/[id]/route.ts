@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const axios = require('axios');
+const axios = require("axios");
 
 async function getAccessToken() {
   const tokenUrl = `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`;
@@ -8,47 +8,197 @@ async function getAccessToken() {
     grant_type: "client_credentials",
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    scope: `${process.env.RESOURCE}/.default`
+    scope: `${process.env.RESOURCE}/.default`,
   });
 
   const res = await axios.post(tokenUrl, params);
   return res.data.access_token;
 }
 
-
 export async function GET(req, { params }) {
-    const ticketId = params.id;
+  const ticketId = params.id;
   const token = await getAccessToken();
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
   const headers = { Authorization: `Bearer ${token}` };
 
-  const select = 'wdrgns_askadamid,createdon,wdrgns_question,wdrgns_reply,_wdrgns_ticket_value,_wdrgns_askadam_value';
+  const select =
+    "wdrgns_askadamid,createdon,wdrgns_question,wdrgns_reply,_wdrgns_ticket_value,_wdrgns_askadam_value";
 
   const filter = `_wdrgns_ticket_value eq ${ticketId}`;
 
-  const orderby = 'createdon asc';
+  const orderby = "createdon asc";
 
-  const askAdamUrl = `${baseUrl}/wdrgns_askadams?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=${orderby}`;
+  const askAdamUrl = `${baseUrl}/wdrgns_askadams?$filter=${encodeURIComponent(
+    filter
+  )}&$select=${select}&$orderby=${orderby}`;
 
   try {
     const res = await axios.get(askAdamUrl, { headers });
     const records = res.data.value;
 
-    const chats = records.map(e => ({
-      AskAdamId: e._wdrgns_askadam_value || null,  
+    const chats = records.map((e) => ({
+      AskAdamId: e._wdrgns_askadam_value || null,
       CreatedOn: e.createdon || null,
       Question: e.wdrgns_question || null,
       Answer: e.wdrgns_reply || null,
       TicketId: e._wdrgns_ticket_value || null,
-      GUID: e.wdrgns_askadamid || null
+      GUID: e.wdrgns_askadamid || null,
     }));
 
-    return NextResponse.json(chats);
+    // Sort by CreatedOn in ascending order && created date also can be null
+    chats.sort((a, b) => {
+      if (a.CreatedOn === null) return 1; // Nulls last
+      if (b.CreatedOn === null) return -1; // Nulls last
+      return new Date(a.CreatedOn) - new Date(b.CreatedOn);
+    });
 
+    return NextResponse.json(chats);
   } catch (err) {
-    console.error("Error fetching AskAdam chats:", err.response?.data?.error || err.message);
+    console.error(
+      "Error fetching AskAdam chats:",
+      err.response?.data?.error || err.message
+    );
     return [];
   }
 }
 
+export async function POST(req, {params}) {
+  const ticketId = params.id;
+  const body = await req.json();
+  const token = await getAccessToken();
+  const lastCreatedOnStr = await getLastAskAdamRecordCreatedOn(ticketId, token);
 
+  if (lastCreatedOnStr) {
+    const lastCreatedOnDate = new Date(lastCreatedOnStr);
+    const now = new Date();
+    const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+
+    if (lastCreatedOnDate >= fiveMinutesAgo) {
+      return NextResponse.json(
+        {
+          message: "A Question was asked within the last 5 minutes. Please wait before asking another question.",
+        },
+        {
+          status: 429, // Too Many Requests
+          headers: {
+            "Retry-After": "300", // 5 minutes in seconds
+          },
+        }
+      );
+    } else {
+      console.log("OK — Last record is older than 5 minutes. Proceeding...");
+      const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        Accept: "application/json",
+      };
+
+      const firstAskAdamId = await getFirstAskAdamRecordId(ticketId, token);
+
+      const createPayload = {
+        wdrgns_question: body.questionText,
+        "wdrgns_ticket@odata.bind": `/wdrgns_tickets(${ticketId})`,
+      };
+
+      if (firstAskAdamId) {
+        createPayload[
+          "wdrgns_askadam@odata.bind"
+        ] = `/wdrgns_askadams(${firstAskAdamId})`;
+        console.log(
+          `Existing AskAdam record found: ${firstAskAdamId}, setting as lookup`
+        );
+      } else {
+        console.log(
+          `No existing AskAdam records found — creating first question without lookup`
+        );
+      }
+
+      try {
+        const res = await axios.post(
+          `${baseUrl}/wdrgns_askadams`,
+          createPayload,
+          { headers }
+        );
+        console.log("wdrgns_askadam record created successfully.");
+        console.log(
+          "Created record location:",
+          res.headers["odata-entityid"] || res.headers["location"]
+        );
+        return NextResponse.json({
+          message: "AskAdam record created successfully",
+          id: res.data.wdrgns_askadamid,
+        });
+      } catch (error) {
+        console.error(
+          "Failed to create wdrgns_askadam record:",
+          error.response?.data?.error || error.message
+        );
+      }
+    }
+  }
+}
+
+async function getFirstAskAdamRecordId(ticketId, token) {
+  const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const select = "wdrgns_askadamid";
+  const filter = `_wdrgns_ticket_value eq ${ticketId}`;
+  const orderby = "createdon asc";
+  const top = 1;
+
+  const url = `${baseUrl}/wdrgns_askadams?$filter=${encodeURIComponent(
+    filter
+  )}&$select=${select}&$orderby=${orderby}&$top=${top}`;
+
+  try {
+    const res = await axios.get(url, { headers });
+    const records = res.data.value;
+
+    if (records.length > 0) {
+      return records[0].wdrgns_askadamid;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error(
+      "Error fetching first AskAdam record:",
+      err.response?.data?.error || err.message
+    );
+    return null;
+  }
+}
+
+async function getLastAskAdamRecordCreatedOn(ticketId, token) {
+  const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const select = "createdon";
+  const filter = `_wdrgns_ticket_value eq ${ticketId}`;
+  const orderby = "createdon desc";
+  const top = 1;
+
+  const url = `${baseUrl}/wdrgns_askadams?$filter=${encodeURIComponent(
+    filter
+  )}&$select=${select}&$orderby=${orderby}&$top=${top}`;
+
+  try {
+    const res = await axios.get(url, { headers });
+    const records = res.data.value;
+
+    if (records.length > 0) {
+      return records[0].createdon;
+    } else {
+      return null;
+    }
+  } catch (err) {
+    console.error(
+      "Error fetching last AskAdam record createdon:",
+      err.response?.data?.error || err.message
+    );
+    return null;
+  }
+}
