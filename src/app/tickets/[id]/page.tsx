@@ -33,9 +33,6 @@ function formatTimeFromISOString(isoString, options = {}) {
 }
 
 
-
-
-
 export default async function TicketPage({ params }) {
   let ticketDetails;
   let displayOrderDetails;
@@ -52,6 +49,10 @@ export default async function TicketPage({ params }) {
       </div>
     );
   }
+
+
+  const sortedDisplayOrder = displayOrderDetails.data?.eventSchedules.sort((a, b) => a.displayOrder - b.displayOrder);
+
 
   // Map API response fields
 
@@ -185,20 +186,20 @@ export default async function TicketPage({ params }) {
           <thead className="bg-gray-100">
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Display Order
+                Item
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Start Time
+                Start 
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                End Time
+                End 
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {displayOrderDetails.data?.eventSchedules.map(item => (
+            {sortedDisplayOrder.map((item, index) => (
                <tr key={item.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.displayOrder}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${index + 1}`}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
               </tr>
