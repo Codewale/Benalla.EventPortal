@@ -223,6 +223,7 @@ export async function GET(req, { params}) {
         }
       : null,
     eventAlerts: alerts.map((alert) => ({
+      id: alert.wdrgns_eventalertsid,
       alertColour: alert.wdrgns_alertcolour,
       alertImage: alert.wdrgns_alertimage,
       alertText: alert.wdrgns_alerttext,
