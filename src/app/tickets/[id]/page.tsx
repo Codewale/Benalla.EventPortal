@@ -11,11 +11,40 @@ async function getTicket(id: string) {
 }
 
 
+// // Helper to fetch display order for table from API 
+async function getDisplayOrder(id: string) {
+  const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+  // Use relative path since API and UI are on the same origin in Next.js
+  return await axios.get(`${baseUrl}/api/display/${id}`);
+}
+
+
+// function which transfrom the time of table and object is used for timezone
+
+function formatTimeFromISOString(isoString, options = {}) {
+  const date = new Date(isoString);
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    ...options,
+  });
+}
+
+
+
+
 
 export default async function TicketPage({ params }) {
   let ticketDetails;
+  let displayOrderDetails;
   try {
     ticketDetails = await getTicket(params.id);
+    displayOrderDetails = await getDisplayOrder(params.id);
+
+    // console.log(displayOrderDetails?.data?.eventSchedules);
+
   } catch (error) {
     return (
       <div className="text-center mt-10 text-red-500">
@@ -151,7 +180,32 @@ export default async function TicketPage({ params }) {
             <span className="text-gray-900">{promoter?.name || "-"}</span>
           </div>
         </div>
-      
+
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-100">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Display Order
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Start Time
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                End Time
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {displayOrderDetails.data?.eventSchedules.map(item => (
+               <tr key={item.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.displayOrder}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+              </tr>
+            )) }
+          </tbody>
+        </table>
+
         {/* Sponsors section can be added here if available in API */}
         
       </div>
