@@ -40,7 +40,7 @@ export default async function TicketPage({ params }) {
     ticketDetails = await getTicket(params.id);
     displayOrderDetails = await getDisplayOrder(params.id);
 
-    // console.log(displayOrderDetails?.data?.eventSchedules);
+    console.log(displayOrderDetails?.data?.eventSchedules);
 
   } catch (error) {
     return (
@@ -199,7 +199,7 @@ export default async function TicketPage({ params }) {
           <tbody className="bg-white divide-y divide-gray-200">
             {sortedDisplayOrder.map((item, index) => (
                <tr key={item.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${index + 1}`}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
               </tr>
