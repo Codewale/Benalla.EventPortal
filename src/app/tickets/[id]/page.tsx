@@ -101,7 +101,7 @@ export default async function TicketPage({ params }) {
 
       <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">
         
-        <div className="bg-white shadow-2xl rounded-2xl max-w-2xl w-full p-10 md:p-12 lg:p-14 m-4">
+        <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
           <div className="flex items-center mb-6">
             {eventImage && (
               <img
@@ -212,7 +212,9 @@ export default async function TicketPage({ params }) {
             </div>
           </div>
 
-            <table className="divide-y divide-gray-200 w-[10px]">
+          {/* Wrap tables in a scrollable container to prevent overflow */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-yellow-500">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -284,11 +286,9 @@ export default async function TicketPage({ params }) {
                 ))}
               </tbody>
             </table>
-
-
+          </div>
 
           {/* Sponsors section can be added here if available in API */}
-          
         </div>
         <ChatModal params={params}/>
       </div>
