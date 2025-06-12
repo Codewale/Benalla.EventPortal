@@ -29,7 +29,7 @@ export default function ChatModal({ params }) {
   async function getQues() {
     try {
       const resp = await getChats(params.id);
-      console.log({ resp });
+      // console.log({ resp });
       setData(resp?.data);
     } catch (error) {
       console.error(error);

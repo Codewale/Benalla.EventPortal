@@ -37,12 +37,14 @@ export default async function TicketPage({ params }) {
   let ticketDetails;
   let displayOrderDetails;
   let alertMessageList;
+  let ticketLinks;
   try {
     ticketDetails = await getTicket(params.id);
     displayOrderDetails = await getDisplayOrder(params.id);
     alertMessageList = displayOrderDetails.data?.eventAlerts;
+    ticketLinks = displayOrderDetails.data?.ticketLinks;
 
-
+    console.log(ticketLinks);
   } catch (error) {
     return (
       <div className="text-center mt-10 text-red-500">
@@ -78,17 +80,16 @@ export default async function TicketPage({ params }) {
                 {alertMessageList.map(item => (
                   <li
                     key={item.id}
-                    className={`rounded-lg shadow-md p-4 text-black flex justify-center items-center gap-2 ${
-                      item.alertColour
-                        ? `bg-[${item.alertColour}] border-[${item.alertColour}]`
-                        : 'bg-red-100 border-red-400'
-                    }`}
+                    style={{
+                      backgroundColor: `#${item.alertColour}` || '#FEE2E2'
+                    }}
+                    className={"rounded-lg shadow-md p-4 text-white flex justify-center items-center gap-2"}
                     role="alert"
                   >
                     {item.alertImage && (
                       <img src={item.alertImage} alt="alert icon" className="w-6 h-6" />
                     )}
-                    <p className="text-sm font-medium">{item.alertText}</p>
+                    <p className="text-lg font-medium">{item.alertText}</p>
                   </li>
                 ))}
               </div>
@@ -211,30 +212,80 @@ export default async function TicketPage({ params }) {
             </div>
           </div>
 
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100">
-              <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Item
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Start 
-                </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  End 
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {sortedDisplayOrder.map((item) => (
-                <tr key={item.id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+            <table className="divide-y divide-gray-200 w-[10px]">
+              <thead className="bg-yellow-500">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Item
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Start 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    End 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Event Number
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Session 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Time
+                  </th>
                 </tr>
-              )) }
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {sortedDisplayOrder.map((item) => (
+                  <tr key={item.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>    
+
+            <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Url 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Link Image 
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {ticketLinks.map((item) => (
+                  <tr key={item.displayOrder}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <a href={`${item.url}`} target="_blank" className="text-blue-500 underline">
+
+                        {item.url}
+                      </a>
+                      </td>
+                    {item.linkImage ? 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {item.linkImage}</td>
+                    : 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>  
+                  
+                  }                   
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+
 
           {/* Sponsors section can be added here if available in API */}
           
