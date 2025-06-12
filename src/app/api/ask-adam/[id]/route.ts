@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 const axios = require("axios");
 
@@ -6,16 +6,16 @@ async function getAccessToken() {
   const tokenUrl = `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`;
   const params = new URLSearchParams({
     grant_type: "client_credentials",
-    client_id: process.env.CLIENT_ID,
-    client_secret: process.env.CLIENT_SECRET,
-    scope: `${process.env.RESOURCE}/.default`,
+    client_id: process.env.CLIENT_ID as string,
+    client_secret: process.env.CLIENT_SECRET as string,
+    scope: `${process.env.RESOURCE as string}/.default`,
   });
 
   const res = await axios.post(tokenUrl, params);
   return res.data.access_token;
 }
 
-export async function GET(req, { params }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const ticketId = params.id;
   const token = await getAccessToken();
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
@@ -36,7 +36,16 @@ export async function GET(req, { params }) {
     const res = await axios.get(askAdamUrl, { headers });
     const records = res.data.value;
 
-    const chats = records.map((e) => ({
+    interface AskAdamRecord {
+      _wdrgns_askadam_value: string | null;
+      createdon: string | null;
+      wdrgns_question: string | null;
+      wdrgns_reply: string | null;
+      _wdrgns_ticket_value: string | null;
+      wdrgns_askadamid: string | null;
+    }
+
+    const chats = records.map((e: AskAdamRecord) => ({
       AskAdamId: e._wdrgns_askadam_value || null,
       CreatedOn: e.createdon || null,
       Question: e.wdrgns_question || null,
@@ -49,16 +58,21 @@ export async function GET(req, { params }) {
     chats.sort((a, b) => {
       if (a.CreatedOn === null) return 1; // Nulls last
       if (b.CreatedOn === null) return -1; // Nulls last
-      return new Date(a.CreatedOn) - new Date(b.CreatedOn);
+      return new Date(a.CreatedOn).getTime() - new Date(b.CreatedOn).getTime();
     });
 
     return NextResponse.json(chats);
-  } catch (err) {
+  } catch (err: any) {
     console.error(
       "Error fetching AskAdam chats:",
       err.response?.data?.error || err.message
     );
-    return [];
+    return NextResponse.json(
+      [],
+    {
+      status: 500, // Internal Server Error
+    }
+    );
   }
 }
 
@@ -131,7 +145,7 @@ export async function POST(req, {params}) {
           message: "AskAdam record created successfully",
           id: res.data.wdrgns_askadamid,
         });
-      } catch (error) {
+      } catch (error: any) {
         console.error(
           "Failed to create wdrgns_askadam record:",
           error.response?.data?.error || error.message
@@ -163,7 +177,7 @@ async function getFirstAskAdamRecordId(ticketId, token) {
     } else {
       return null;
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error(
       "Error fetching first AskAdam record:",
       err.response?.data?.error || err.message
