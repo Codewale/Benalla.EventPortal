@@ -212,8 +212,8 @@ export default async function TicketPage({ params }) {
             </div>
           </div>
 
-            <table className="divide-y divide-gray-200 w-[10px]">
-              <thead className="bg-yellow-500">
+            <table className="divide-y divide-gray-200 w-full table-fixed">
+              <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Item
@@ -238,7 +238,7 @@ export default async function TicketPage({ params }) {
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedDisplayOrder.map((item) => (
                   <tr key={item.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
+                    <td className="px-0 py-4 whitespace-nowrap text-sm font-medium text-gray-500">{item.item}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber}</td>
@@ -249,7 +249,7 @@ export default async function TicketPage({ params }) {
               </tbody>
             </table>    
 
-            <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+            <table className="mt-10 w-full divide-y divide-gray-200 table-fixed">
               <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -266,7 +266,7 @@ export default async function TicketPage({ params }) {
               <tbody className="bg-white divide-y divide-gray-200">
                 {ticketLinks.map((item) => (
                   <tr key={item.displayOrder}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">{item.name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <a href={`${item.url}`} target="_blank" className="text-blue-500 underline">
 
