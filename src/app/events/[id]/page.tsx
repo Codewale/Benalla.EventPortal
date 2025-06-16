@@ -9,10 +9,43 @@ async function getEventsWithText(id: string) {
 }
 
 
+// Helper to fetch display order for table from API 
+async function getDisplayOrder(id: string) {
+  const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+  // Use relative path since API and UI are on the same origin in Next.js
+  return await axios.get(`${baseUrl}/api/display/${id}`);
+}
+
+
+// function which transfrom the time of table and object is used for timezone
+
+function formatTimeFromISOString(isoString, options = {}) {
+  const date = new Date(isoString);
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    ...options,
+  });
+}
+
+
+
+
 export default async function TicketPage({ params }) {
   let eventWithText;
+    let displayOrderDetails;
+  let alertMessageList;
+  let ticketLinks;
+
+
   try {
     eventWithText = await getEventsWithText(params.id);
+     displayOrderDetails = await getDisplayOrder(params.id);
+    alertMessageList = displayOrderDetails.data?.eventAlerts;
+    ticketLinks = displayOrderDetails.data?.ticketLinks;
+
     
     console.log(eventWithText.data);
   } catch (error) {
@@ -22,6 +55,8 @@ export default async function TicketPage({ params }) {
       </div>
     );
   }
+  
+  const sortedDisplayOrder = displayOrderDetails.data?.eventSchedules.sort((a, b) => a.displayOrder - b.displayOrder);
 
 
   // Map API response fields
@@ -41,6 +76,31 @@ export default async function TicketPage({ params }) {
 
   return (
     <>
+          {alertMessageList &&  
+            <ul className="flex justify-center items-center bg-gray-100">
+              <div className="space-y-3 w-full max-w-sm">
+                {alertMessageList.map(item => (
+                  <li
+                    key={item.id}
+                    style={{
+                      backgroundColor: `#${item.alertColour}` || '#FEE2E2'
+                    }}
+                    className={"rounded-lg shadow-md p-4 text-white flex justify-center items-center gap-2"}
+                    role="alert"
+                  >
+                    {item.alertImage && (
+                      <img src={item.alertImage} alt="alert icon" className="w-6 h-6" />
+                    )}
+                    <p className="text-lg font-medium">{item.alertText}</p>
+                  </li>
+                ))}
+              </div>
+            </ul>
+          }
+
+
+
+
       <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">
         
         <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
@@ -152,6 +212,82 @@ export default async function TicketPage({ params }) {
               />
               <span className="text-gray-900">{promoter?.name || "-"}</span>
             </div>
+
+            <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Item
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Start 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    End 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Event Number
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Session 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Time
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {sortedDisplayOrder.map((item) => (
+                  <tr key={item.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>    
+
+            <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Url 
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Link Image 
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {ticketLinks.map((item) => (
+                  <tr key={item.displayOrder}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <a href={`${item.url}`} target="_blank" className="text-blue-500 underline">
+
+                        {item.url}
+                      </a>
+                      </td>
+                    {item.linkImage ? 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {item.linkImage}</td>
+                    : 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>  
+                  
+                  }                   
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
           </div>
           {/* Sponsors section can be added here if available in API */}
         </div>
