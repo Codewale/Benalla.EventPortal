@@ -44,7 +44,7 @@ export default async function TicketPage({ params }) {
     alertMessageList = displayOrderDetails.data?.eventAlerts;
     ticketLinks = displayOrderDetails.data?.ticketLinks;
 
-    console.log(ticketLinks);
+    
   } catch (error) {
     return (
       <div className="text-center mt-10 text-red-500">
