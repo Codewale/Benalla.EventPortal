@@ -57,7 +57,22 @@ export async function GET(req, { params }) {
     ) ||
     events.find((e) => new Date(e.wdrgns_startdate) > now) ||
     [...events].reverse().find((e) => new Date(e.wdrgns_enddate) < now);
-
+  let futureEvents = events.filter((e) => new Date(e.wdrgns_startdate) > now);
+  futureEvents.sort(
+    (a, b) => new Date(a.wdrgns_startdate) - new Date(b.wdrgns_startdate)
+  );
+  if (futureEvents.length > 0) {
+    selectedEvent = futureEvents[0];
+  } else {
+    let pastEvents = events.filter((e) => new Date(e.wdrgns_startdate) <= now);
+    pastEvents.sort(
+      (a, b) => new Date(b.wdrgns_startdate) - new Date(a.wdrgns_startdate)
+    );
+    if (pastEvents.length > 0) {
+      selectedEvent = pastEvents[0];
+    }
+  }
+ 
   if (!selectedEvent) throw new Error("No related event found.");
 
   let promoter = null;
