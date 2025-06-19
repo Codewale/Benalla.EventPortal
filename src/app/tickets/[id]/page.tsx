@@ -44,6 +44,7 @@ export default async function TicketPage({ params }) {
     alertMessageList = displayOrderDetails.data?.eventAlerts;
     ticketLinks = displayOrderDetails.data?.ticketLinks;
 
+
     
   } catch (error) {
     return (
@@ -65,12 +66,21 @@ export default async function TicketPage({ params }) {
   const event = ticketDetails.data.event;
   const promoter = ticketDetails.data.promoter;
   const location = ticketDetails.data.location;
+  const sponsors = ticketDetails.data.sponsors;
+  const primarySponsors = ticketDetails.data.primarySponsors;
+  const qrCode = ticketDetails.data.qrCode;
 
-  const eventImage = event?.image ? `data:image/png;base64,${event.image}` : "";
-  const eventLogo = event?.logo ? `data:image/png;base64,${event.logo}` : "";
+  console.log(ticketDetails.data,qrCode);
+
+  const eventImage = event?.image ? `${event.image}` : "";
+  const eventLogo = event?.logo ? `${event.logo}` : "";
   const promoterLogo = promoter?.logo
-    ? `data:image/png;base64,${promoter.logo}`
+    ? `${promoter.logo}`
     : "";
+
+  const locationMap = event?.map ? `${event.map}` : "";
+  const qr = qrCode ? `${qrCode}` : "";
+
 
   return (
     <>
@@ -99,8 +109,7 @@ export default async function TicketPage({ params }) {
 
 
 
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">
-        
+      <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">  
         <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
           <div className="flex items-center mb-6">
             {eventImage && (
@@ -127,6 +136,17 @@ export default async function TicketPage({ params }) {
               className="w-full h-48 object-cover rounded-lg mb-6"
             />
           )}
+
+          {qr && (
+            <div className="flex justify-center items-center m-4">
+              <img src={qr} 
+               alt="QR CODE"
+               className="w-20 h-20"
+              />
+            </div>
+          )}
+
+
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <div className="font-semibold text-gray-700">Contact</div>
@@ -155,11 +175,35 @@ export default async function TicketPage({ params }) {
               <div className="text-gray-900">{location?.name || "-"}</div>
             </div>
             <div>
+              <div className="font-semibold text-gray-700">Event Description</div>
+              <div className="text-gray-900">{event?.description || "-"}</div>
+            </div>
+            <div>
               <div className="font-semibold text-gray-700">Location Address</div>
               <div className="text-gray-900">
-                {location?.addressLine1 || "-"}
-                {location?.addressLine2 ? `, ${location.addressLine2}` : ""}
+                   {location?.addressLine1 || "-"}
+                    {location?.addressLine2 ? `, ${location.addressLine2}` : ""}  
               </div>
+            </div>
+            <div>
+              <div className="font-semibold text-gray-700">Location Map</div>
+
+              
+              <div className="text-gray-900">
+                {
+                  locationMap ? 
+                  <img
+                    src={locationMap}
+                    alt="Map of Location"
+                    className="w-20 h-16 object-cover rounded-lg mb-6"
+                  />
+                  :
+                  <p className="text-gray-900">Map of the location </p>
+                }                
+              </div>
+              
+             
+              
             </div>
             <div>
               <div className="font-semibold text-gray-700">Cafe Hours</div>
@@ -214,7 +258,7 @@ export default async function TicketPage({ params }) {
 
           {/* Wrap tables in a scrollable container to prevent overflow */}
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full mt-5 divide-y divide-gray-200">
               <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -286,6 +330,61 @@ export default async function TicketPage({ params }) {
                 ))}
               </tbody>
             </table>
+
+            <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Image 
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {sponsors.map((item) => (
+                  <tr key={item.name}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                    {item.image ? 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {item.linkImage}</td>
+                    : 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>  
+                  }                   
+                  </tr>
+                ))}
+              </tbody>
+            </table>    
+
+              {primarySponsors.lenght > 0 && 
+              
+                <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                     Image 
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {primarySponsors.map((item) => (
+                  <tr key={item.name}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                    {item.image ? 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {item.linkImage}</td>
+                    : 
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>                    
+                  }                   
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+              }
           </div>
 
           {/* Sponsors section can be added here if available in API */}
