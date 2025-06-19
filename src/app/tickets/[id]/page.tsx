@@ -68,8 +68,9 @@ export default async function TicketPage({ params }) {
   const location = ticketDetails.data.location;
   const sponsors = ticketDetails.data.sponsors;
   const primarySponsors = ticketDetails.data.primarySponsors;
+  const qrCode = ticketDetails.data.qrCode;
 
-  console.log(event);
+  console.log(ticketDetails.data,qrCode);
 
   const eventImage = event?.image ? `${event.image}` : "";
   const eventLogo = event?.logo ? `${event.logo}` : "";
@@ -78,6 +79,8 @@ export default async function TicketPage({ params }) {
     : "";
 
   const locationMap = event?.map ? `${event.map}` : "";
+  const qr = qrCode ? `${qrCode}` : "";
+
 
   return (
     <>
@@ -133,6 +136,17 @@ export default async function TicketPage({ params }) {
               className="w-full h-48 object-cover rounded-lg mb-6"
             />
           )}
+
+          {qr && (
+            <div className="flex justify-center items-center m-4">
+              <img src={qr} 
+               alt="QR CODE"
+               className="w-20 h-20"
+              />
+            </div>
+          )}
+
+
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
               <div className="font-semibold text-gray-700">Contact</div>
@@ -181,7 +195,7 @@ export default async function TicketPage({ params }) {
                   <img
                     src={locationMap}
                     alt="Map of Location"
-                    className="w-16 h-16 object-cover rounded-lg mb-6"
+                    className="w-20 h-16 object-cover rounded-lg mb-6"
                   />
                   :
                   <p className="text-gray-900">Map of the location </p>

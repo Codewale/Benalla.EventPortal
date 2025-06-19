@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 const axios = require('axios');
 
+// we are using eventId , so that's why I didn't omit it, please check it 
 const eventId = '1234a5db-057b-ef11-ac20-6045bdc34dd8';
 
 async function getAccessToken() {

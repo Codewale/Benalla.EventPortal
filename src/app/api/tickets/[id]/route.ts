@@ -86,6 +86,17 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
   return res.data.value || [];
 }
 
+async function getQRCodeBase64(text) {
+  if (!text) return null;
+  try {
+    const res = await axios.get(`https://quickchart.io/qr?text=${encodeURIComponent(text)}`, { responseType: 'arraybuffer' });
+    return `data:image/png;base64,${Buffer.from(res.data).toString('base64')}`;
+  } catch {
+    return null;
+  }
+}
+
+
 // async function getTicketDetails(ticketId) {
 
 export async function GET(req, {params}) {
@@ -158,7 +169,10 @@ export async function GET(req, {params}) {
     getEventSchedules(selectedEvent.wdrgns_eventid, headers, baseUrl)
   ]);
 
+  const qr = await getQRCodeBase64(ticket.wdrgns_ticketdynamicurl);
+
   const result = {
+    qrCode: qr,
     ticket: {
       id: ticket.wdrgns_ticketid,
       name: ticket.wdrgns_ticket,
