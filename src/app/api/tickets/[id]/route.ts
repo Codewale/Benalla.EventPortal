@@ -138,6 +138,7 @@ export async function GET(req, {params}) {
     }
   }
 
+ 
   if (!selectedEvent) throw new Error("No related event found.");
 
   const [promoter, location, promoterLogo, alerts, ticketLinks, primarySponsors, sponsors,
