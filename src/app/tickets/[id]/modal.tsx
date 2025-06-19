@@ -8,8 +8,6 @@ import axios from "axios";
 async function getChats(id: string) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
   // Use relative path since API and UI are on the same origin in Next.js
-  console.log({baseUrl});
-  
   return await axios.get(`${baseUrl}/api/ask-adam/${id}`);
 }
 
