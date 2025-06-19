@@ -67,13 +67,14 @@ export default async function TicketPage({ params }) {
   const sponsors = eventWithText.data.sponsors;
   const primarySponsors = eventWithText.data.primarySponsors;
 
-  console.log(contact);
+  console.log(event);
 
-  const eventImage = event?.image ? `data:image/png;base64,${event.image}` : "";
-  const eventLogo = event?.logo ? `data:image/png;base64,${event.logo}` : "";
+  const eventImage = event?.image ? `${event.image}` : "";
+  const eventLogo = event?.logo ? `${event.logo}` : "";
   const promoterLogo = promoter?.logo
-    ? `data:image/png;base64,${promoter.logo}`
+    ? `${promoter.logo}`
     : "";
+  const locationMap = event?.map ? `${event.map}` : "";  
 
   return (
     <>
@@ -116,27 +117,35 @@ export default async function TicketPage({ params }) {
                 {event?.startDate?.slice(0, 10) || "-"}
               </div>
             </div>
-
             <div>
               <div className="font-semibold text-gray-700">Event Image</div>
                 <div className="flex items-center mt-1">
-                <img
-                  src={eventImage}
-                  alt="Event Image"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
+
+                  {eventImage ? 
+                    <img
+                      src={eventImage}
+                      alt="Event Image"
+                      className="w-8 h-8 rounded-full mr-2"
+                    />
+                : 
+                    <p className="text-gray-900">Image of the Event</p>
+                }               
                 </div>
             </div>
-
-
             <div>
               <div className="font-semibold text-gray-700">Event Logo</div>
               <div className="flex items-center mt-1">
-              <img
-                src={eventLogo}
-                alt="Event Logo"
-                className="w-8 h-8 rounded-full mr-2"
-              />
+
+                {eventLogo ? 
+                <img
+                  src={eventLogo}
+                  alt="Event Logo"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
+                : 
+                <p className="text-gray-900">Logo of the Event</p>
+              
+              }
               </div>
             </div>
             <div>
@@ -159,6 +168,24 @@ export default async function TicketPage({ params }) {
 
               </div>
             </div>
+
+            <div>
+              <div className="font-semibold text-gray-700">Location Map</div> 
+              <div className="text-gray-900">
+                {
+                  locationMap ? 
+                  <img
+                    src={locationMap}
+                    alt="Map of Location"
+                    className="w-16 h-16 object-cover rounded-lg mb-6"
+                  />
+                  :
+                  <p className="text-gray-900">Map of the location </p>
+                }                
+              </div> 
+            </div>
+
+
             <div>
               <div className="font-semibold text-gray-700">Cafe Opening Hours</div>
               <div className="text-gray-900">
@@ -214,12 +241,18 @@ export default async function TicketPage({ params }) {
             </div>
 
             <div>
-              <div className="font-semibold text-gray-700">On Scale From</div>
+              <div className="font-semibold text-gray-700">On Sale From</div>
               <div className="text-gray-900">
-                {/* {event?.onSaleFrom || "-"} */}
                 {event?.onSaleFrom?.slice(0, 10) || "-"}
               </div>
             </div>          
+
+            <div>
+              <div className="font-semibold text-gray-700">On Sale To</div>
+              <div className="text-gray-900">
+                {event?.onSaleTo?.slice(0, 10) || "-"}
+              </div>
+            </div>
 
           </div>  
 

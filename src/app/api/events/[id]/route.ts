@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-
 const axios = require('axios');
 
-const eventId = '1234a5db-057b-ef11-ac20-6045bdc34dd8'; // Your event GUID
+const eventId = '1234a5db-057b-ef11-ac20-6045bdc34dd8';
 
 async function getAccessToken() {
   const url = `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`;
@@ -10,66 +9,62 @@ async function getAccessToken() {
     grant_type: 'client_credentials',
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    scope: `${process.env.RESOURCE}/.default`,
+    scope: `${process.env.RESOURCE}/.default`
   });
 
   const res = await axios.post(url, params);
   return res.data.access_token;
 }
 
-async function getEventDetails(headers, baseUrl) {
-  const selectFields = [
-    'wdrgns_eventid', 'wdrgns_event', 'wdrgns_startdate', 'wdrgns_enddate',
-    '_wdrgns_promoterid_value', '_wdrgns_locationid_value', 'wdrgns_onsalefrom',
-    'wdrgns_onsaleto', 'wdrgns_openinghoursoffice', 'wdrgns_openinghoursofficebranding',
-    'wdrgns_openinghourscafe', 'wdrgns_openinghoursfuelshop', 'wdrgns_openinghourstyres',
-    'wdrgns_openinghourstyrebranding', 'wdrgns_image', 'wdrgns_logo'
-  ].join(',');
-
-  const res = await axios.get(
-    `${baseUrl}/wdrgns_events(${eventId})?$select=${selectFields}`,
-    { headers }
-  );
-  return res.data;
-}
-
-async function getEntityDetails(entitySet, id, selectFields, headers, baseUrl) {
-  if (!id) return null;
-  const url = `${baseUrl}/${entitySet}(${id})?$select=${selectFields}`;
-  const res = await axios.get(url, { headers });
-  return res.data;
-}
-
-async function getEntityImage(entitySet, id, headers, baseUrl) {
-  if (!id) return null;
+async function fetchImageAsBase64(entitySetName, recordId, columnName, headers, baseUrl) {
   try {
-    const res = await axios.get(`${baseUrl}/${entitySet}(${id})?$select=entityimage`, { headers });
-    return res.data.entityimage || null;
+    const url = `${baseUrl}/${entitySetName}(${recordId})/${columnName}/$value`;
+    const res = await axios.get(url, { headers, responseType: 'arraybuffer' });
+    const base64 = Buffer.from(res.data, 'binary').toString('base64');
+    return `data:image/jpeg;base64,${base64}`;
   } catch {
     return null;
   }
 }
 
-async function getPromoterAndLocation(event, headers, baseUrl) {
-  if (!event) return { promoter: null, promoterLogo: null, location: null };
+async function getEventDetails(headers, baseUrl) {
+  const res = await axios.get(
+    `${baseUrl}/wdrgns_events(${eventId})?$select=wdrgns_event,wdrgns_eventid,wdrgns_startdate,wdrgns_enddate,_wdrgns_promoterid_value,_wdrgns_locationid_value,wdrgns_openinghourscafe,wdrgns_openinghoursfuelshop,wdrgns_openinghoursoffice,wdrgns_openinghoursofficebranding,wdrgns_openinghourstyres,wdrgns_openinghourstyrebranding,wdrgns_image,wdrgns_logo,wdrgns_eventmap,wdrgns_onsaleto,wdrgns_onsalefrom,wdrgns_descriptionblurb`,
+    { headers }
+  );
+  return res.data;
+}
 
-  const [
-    promoter,
-    promoterLogo,
-    location,
-  ] = await Promise.all([
+async function getPromoterLogoAsBase64(accountId, headers, baseUrl) {
+  const res = await axios.get(`${baseUrl}/accounts(${accountId})?$select=entityimage`, { headers });
+  return res.data.entityimage || null;
+}
+
+async function getSponsors(eventId, relationshipName, headers, baseUrl) {
+  const expand = `${relationshipName}($select=name,entityimage)`;
+  const url = `${baseUrl}/wdrgns_events(${eventId})?$expand=${expand}`;
+  const res = await axios.get(url, { headers });
+  const accounts = res.data?.[relationshipName] || [];
+  return accounts.map(account => ({
+    name: account.name,
+    image: account.entityimage ? `data:image/jpeg;base64,${account.entityimage}` : null
+  }));
+}
+
+async function getPromoterAndLocation(event, headers, baseUrl) {
+  const [promoter, location, promoterLogo] = await Promise.all([
     event._wdrgns_promoterid_value
-      ? getEntityDetails('accounts', event._wdrgns_promoterid_value, 'name,accountid', headers, baseUrl)
-      : null,
-    event._wdrgns_promoterid_value
-      ? getEntityImage('accounts', event._wdrgns_promoterid_value, headers, baseUrl)
+      ? axios.get(`${baseUrl}/accounts(${event._wdrgns_promoterid_value})?$select=name,accountid`, { headers }).then(r => r.data)
       : null,
     event._wdrgns_locationid_value
-      ? getEntityDetails('wdrgns_locations', event._wdrgns_locationid_value, 'wdrgns_location,wdrgns_addressline1,wdrgns_addressline2,_wdrgns_suburbid_value,wdrgns_locationid', headers, baseUrl)
+      ? axios.get(`${baseUrl}/wdrgns_locations(${event._wdrgns_locationid_value})?$select=wdrgns_location,wdrgns_addressline1,wdrgns_addressline2,_wdrgns_suburbid_value,wdrgns_locationid`, { headers }).then(r => r.data)
       : null,
+    event._wdrgns_promoterid_value
+      ? getPromoterLogoAsBase64(event._wdrgns_promoterid_value, headers, baseUrl)
+      : null
   ]);
 
-  return { promoter, promoterLogo, location };
+  return { promoter, location, promoterLogo };
 }
 
 async function getEventAlerts(headers, baseUrl) {
@@ -106,7 +101,7 @@ async function getEventSchedules(headers, baseUrl) {
       displayOrder: item.wdrgns_displayorder,
       eventNumber: item.wdrgns_eventnumber,
       session: item.wdrgns_session,
-      time: item.wdrgns_time,
+      time: item.wdrgns_time
     }));
   }
 
@@ -115,7 +110,7 @@ async function getEventSchedules(headers, baseUrl) {
   const pastSchedules = pastRes.data.value || [];
 
   if (pastSchedules.length > 0) {
-    const lastDate = pastSchedules[0].wdrgns_starttime.split('T')[0];
+    const lastDate = pastSchedules[0].wdrgns_starttime.split("T")[0];
     return pastSchedules.filter(item => item.wdrgns_starttime.startsWith(lastDate)).map(item => ({
       startTime: item.wdrgns_starttime,
       endTime: item.wdrgns_endtime,
@@ -124,90 +119,73 @@ async function getEventSchedules(headers, baseUrl) {
       id: item.wdrgns_eventscheduleid,
       eventNumber: item.wdrgns_eventnumber,
       session: item.wdrgns_session,
-      time: item.wdrgns_time,
+      time: item.wdrgns_time
     }));
   }
 
   return [];
 }
 
-async function getSponsors(eventId, relationshipName, headers, baseUrl) {
-  const expand = `${relationshipName}($select=name,entityimage)`;
-  const url = `${baseUrl}/wdrgns_events(${eventId})?$expand=${expand}`;
+export async function GET(req, {params}) {
+  const eventId = params.id;
+  const token = await getAccessToken();
+  const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+  const headers = { Authorization: `Bearer ${token}` };
 
-  const res = await axios.get(url, { headers });
-  const accounts = res.data?.[relationshipName] || [];
+  const event = await getEventDetails(headers, baseUrl);
+  const [alerts, schedules, { promoter, location, promoterLogo },
+         eventImage, eventLogo, eventMap, primarySponsors, sponsors] = await Promise.all([
+    getEventAlerts(headers, baseUrl),
+    getEventSchedules(headers, baseUrl),
+    getPromoterAndLocation(event, headers, baseUrl),
+    event.wdrgns_image ? fetchImageAsBase64('wdrgns_events', event.wdrgns_eventid, 'wdrgns_image', headers, baseUrl) : null,
+    event.wdrgns_logo ? fetchImageAsBase64('wdrgns_events', event.wdrgns_eventid, 'wdrgns_logo', headers, baseUrl) : null,
+    event.wdrgns_eventmap ? fetchImageAsBase64('wdrgns_events', event.wdrgns_eventid, 'wdrgns_eventmap', headers, baseUrl) : null,
+    getSponsors(event.wdrgns_eventid, 'wdrgns_event_primarysponsor', headers, baseUrl),
+    getSponsors(event.wdrgns_eventid, 'wdrgns_event_sponsor', headers, baseUrl)
+  ]);
 
-  return accounts.map(account => ({
-    name: account.name,
-    image: account.entityimage ? `data:image/jpeg;base64,${account.entityimage}` : null,
-  }));
-}
-
-export async function GET(req, { params }) {
-  try {
-    const ticketId = params.id;
-    const token = await getAccessToken();
-    const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
-    const headers = { Authorization: `Bearer ${token}` };
-
-    const event = await getEventDetails(headers, baseUrl);
-    const [alerts, schedules, { promoter, promoterLogo, location }, primarySponsors, sponsors] = await Promise.all([
-      getEventAlerts(headers, baseUrl),
-      getEventSchedules(headers, baseUrl),
-      getPromoterAndLocation(event, headers, baseUrl),
-      getSponsors(eventId, 'wdrgns_event_primarysponsor', headers, baseUrl),
-      getSponsors(eventId, 'wdrgns_event_sponsor', headers, baseUrl),
-    ]);
-
-    const result = {
-      event: {
-        id: event.wdrgns_eventid,
-        name: event.wdrgns_event,
-        startDate: event.wdrgns_startdate,
-        endDate: event.wdrgns_enddate,
-        onSaleFrom: event.wdrgns_onsalefrom,
-        onSaleTo: event.wdrgns_onsaleto,
-        openingHours: {
-          office: event.wdrgns_openinghoursoffice,
-          officeBranding: event.wdrgns_openinghoursofficebranding,
-          cafe: event.wdrgns_openinghourscafe,
-          fuelShop: event.wdrgns_openinghoursfuelshop,
-          tyres: event.wdrgns_openinghourstyres,
-          tyreBranding: event.wdrgns_openinghourstyrebranding,
-        },
-        image: event.wdrgns_image,
-        logo: event.wdrgns_logo,
-        descriptionBlurb: event.wdrgns_descriptionblurb,
+  const result = {
+    event: {
+      id: event.wdrgns_eventid,
+      name: event.wdrgns_event,
+      startDate: event.wdrgns_startdate,
+      endDate: event.wdrgns_enddate,
+      onSaleFrom: event.wdrgns_onsalefrom,
+      onSaleTo: event.wdrgns_onsaleto,
+      description: event.wdrgns_descriptionblurb,
+      openingHours: {
+        office: event.wdrgns_openinghoursoffice,
+        officeBranding: event.wdrgns_openinghoursofficebranding,
+        cafe: event.wdrgns_openinghourscafe,
+        fuelShop: event.wdrgns_openinghoursfuelshop,
+        tyres: event.wdrgns_openinghourstyres,
+        tyreBranding: event.wdrgns_openinghourstyrebranding
       },
-      promoter: promoter
-        ? {
-            id: promoter.accountid,
-            name: promoter.name,
-            logo: promoterLogo ? `data:image/jpeg;base64,${promoterLogo}` : null,
-          }
-        : null,
-      location: location
-        ? {
-            id: location.wdrgns_locationid,
-            name: location.wdrgns_location,
-            addressLine1: location.wdrgns_addressline1,
-            addressLine2: location.wdrgns_addressline2,
-            suburbId: location._wdrgns_suburbid_value,
-          }
-        : null,
-      eventAlerts: alerts,
-      eventSchedules: schedules,
-      primarySponsors,
-      sponsors,
-    };
+      image: eventImage || null,
+      logo: eventLogo || null,
+      map: eventMap || null
+    },
+    promoter: promoter ? {
+      id: promoter.accountid,
+      name: promoter.name,
+      logo: promoterLogo ? `data:image/jpeg;base64,${promoterLogo}` : null
+    } : null,
+    location: location ? {
+      id: location.wdrgns_locationid,
+      name: location.wdrgns_location,
+      addressLine1: location.wdrgns_addressline1,
+      addressLine2: location.wdrgns_addressline2,
+      suburbId: location._wdrgns_suburbid_value
+    } : null,
+    eventAlerts: alerts,
+    eventSchedules: schedules,
+    primarySponsors,
+    sponsors
+  };
 
-    
-   return NextResponse.json(result, {
-    status: 200,
-  });
-    // console.log(JSON.stringify(result, null, 2));
-  } catch (err) {
-    console.error('Error:', err.response?.data || err.message);
-  }
+  return NextResponse.json(result, {
+    status: 200
+  })
 }
+
