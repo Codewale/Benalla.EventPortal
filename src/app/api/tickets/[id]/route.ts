@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-
 const axios = require('axios');
 
 async function getAccessToken() {
@@ -14,6 +13,8 @@ async function getAccessToken() {
   const res = await axios.post(url, params);
   return res.data.access_token;
 }
+
+const baseUrl = process.env.APPSETTING_BASE_URL;
 
 async function fetchImageAsBase64(entitySetName, recordId, columnName, headers, baseUrl) {
   try {
@@ -55,11 +56,27 @@ async function getEventAlerts(eventId, headers, baseUrl) {
   const select = 'wdrgns_alertcolour,wdrgns_alertimage,wdrgns_alerttext,wdrgns_endtime,wdrgns_starttime,_wdrgns_event_value,wdrgns_eventalertsid';
   const url = `${baseUrl}/wdrgns_eventalertses?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=wdrgns_starttime asc`;
   const res = await axios.get(url, { headers });
-  return res.data.value || [];
+  const rawAlerts = res.data.value || [];
+
+  // Map keys to friendly names and fetch alert images base64
+  const alerts = await Promise.all(
+    rawAlerts.map(async (alert) => ({
+      id: alert.wdrgns_eventalertsid,
+      eventId: alert._wdrgns_event_value,
+      alertColour: `#${alert.wdrgns_alertcolour}`,
+      alertText: alert.wdrgns_alerttext,
+      startTime: alert.wdrgns_starttime,
+      endTime: alert.wdrgns_endtime,
+      alertImageBase64: alert.wdrgns_alertimage
+        ? await fetchImageAsBase64('wdrgns_eventalertses', alert.wdrgns_eventalertsid, 'wdrgns_alertimage', headers, baseUrl)
+        : null
+    }))
+  );
+
+  return alerts;
 }
 
 async function getEventSchedules(eventId, headers, baseUrl) {
-  const now = new Date().toISOString();
   const select = [
     'wdrgns_starttime',
     'wdrgns_endtime',
@@ -75,7 +92,20 @@ async function getEventSchedules(eventId, headers, baseUrl) {
   const filter = `_wdrgns_event_value eq '${eventId}' and wdrgns_showontickets eq true and statecode eq 0`;
   const url = `${baseUrl}/wdrgns_eventschedules?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=wdrgns_starttime asc`;
   const res = await axios.get(url, { headers });
-  return res.data.value || [];
+  const rawSchedules = res.data.value || [];
+
+  // Map keys to friendly names
+  return rawSchedules.map(schedule => ({
+    id: schedule.wdrgns_eventscheduleid,
+    eventId: schedule._wdrgns_event_value,
+    startTime: schedule.wdrgns_starttime,
+    endTime: schedule.wdrgns_endtime,
+    item: schedule.wdrgns_item,
+    eventNumber: schedule.wdrgns_eventnumber,
+    session: schedule.wdrgns_session,
+    time: schedule.wdrgns_time,
+    displayOrder: schedule.wdrgns_displayorder
+  }));
 }
 
 async function getTicketLinks(ticketTypeId, headers, baseUrl) {
@@ -83,7 +113,19 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
   const select = 'wdrgns_displayorder,wdrgns_name,wdrgns_url,wdrgns_linkimage';
   const url = `${baseUrl}/wdrgns_ticketlinkses?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=wdrgns_displayorder asc`;
   const res = await axios.get(url, { headers });
-  return res.data.value || [];
+  const rawLinks = res.data.value || [];
+
+  // Map keys to friendly names & convert link image to base64 if exists
+  return Promise.all(
+    rawLinks.map(async (link) => ({
+      displayOrder: link.wdrgns_displayorder,
+      name: link.wdrgns_name,
+      url: link.wdrgns_url,
+      linkImageBase64: link.wdrgns_linkimage
+        ? `data:image/jpeg;base64,${link.wdrgns_linkimage}`
+        : null
+    }))
+  );
 }
 
 async function getQRCodeBase64(text) {
@@ -96,10 +138,10 @@ async function getQRCodeBase64(text) {
   }
 }
 
-
 // async function getTicketDetails(ticketId) {
 
-export async function GET(req, {params}) {
+export async function GET(req, {params} ){
+
   const ticketId = params.id;
   const token = await getAccessToken();
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
@@ -118,11 +160,13 @@ export async function GET(req, {params}) {
   ]);
 
   const eventRes = await axios.get(
-    `${baseUrl}/wdrgns_events?$filter=statecode eq 0&$select=wdrgns_descriptionblurb,wdrgns_event,wdrgns_eventid,wdrgns_startdate,wdrgns_enddate,_wdrgns_promoterid_value,_wdrgns_locationid_value,wdrgns_openinghourscafe,wdrgns_openinghoursfuelshop,wdrgns_openinghoursoffice,wdrgns_openinghoursofficebranding,wdrgns_openinghourstyres,wdrgns_openinghourstyrebranding,wdrgns_image,wdrgns_logo,wdrgns_eventmap&$expand=wdrgns_ticket_wdrgns_multievent($filter=wdrgns_ticketid eq ${ticketId})`,
+    `${baseUrl}/wdrgns_events?$expand=wdrgns_ticket_wdrgns_multievent($filter=wdrgns_ticketid eq ${ticketId})&$filter=statecode eq 0`,
     { headers }
   );
 
-  const events = eventRes.data.value;
+  const events = eventRes.data.value.filter(
+    e => e.wdrgns_ticket_wdrgns_multievent?.length > 0
+  );
   const now = new Date();
 
   let selectedEvent = null;
@@ -138,11 +182,22 @@ export async function GET(req, {params}) {
     }
   }
 
- 
   if (!selectedEvent) throw new Error("No related event found.");
 
-  const [promoter, location, promoterLogo, alerts, ticketLinks, primarySponsors, sponsors,
-         eventImageBase64, eventLogoBase64, eventMapBase64, alertImagesBase64, schedules] = await Promise.all([
+  // Fetch related data in parallel
+  const [
+    promoter,
+    location,
+    promoterLogo,
+    alerts,
+    ticketLinks,
+    primarySponsors,
+    sponsors,
+    eventImageBase64,
+    eventLogoBase64,
+    eventMapBase64,
+    schedules
+  ] = await Promise.all([
     selectedEvent._wdrgns_promoterid_value
       ? axios.get(`${baseUrl}/accounts(${selectedEvent._wdrgns_promoterid_value})?$select=name,accountid`, { headers }).then(r => r.data)
       : null,
@@ -158,21 +213,70 @@ export async function GET(req, {params}) {
       : [],
     getSponsors(selectedEvent.wdrgns_eventid, 'wdrgns_event_primarysponsor', headers, baseUrl),
     getSponsors(selectedEvent.wdrgns_eventid, 'wdrgns_event_sponsor', headers, baseUrl),
-    selectedEvent.wdrgns_image ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_image', headers, baseUrl) : null,
-    selectedEvent.wdrgns_logo ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_logo', headers, baseUrl) : null,
-    selectedEvent.wdrgns_eventmap ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_eventmap', headers, baseUrl) : null,
-    (async () => {
-      const alerts = await getEventAlerts(selectedEvent.wdrgns_eventid, headers, baseUrl);
-      return Promise.all(
-        alerts.map(alert => alert.wdrgns_alertimage ? fetchImageAsBase64('wdrgns_eventalertses', alert.wdrgns_eventalertsid, 'wdrgns_alertimage', headers, baseUrl) : null)
-      );
-    })(),
+    selectedEvent.wdrgns_image
+      ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_image', headers, baseUrl)
+      : null,
+    selectedEvent.wdrgns_logo
+      ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_logo', headers, baseUrl)
+      : null,
+    selectedEvent.wdrgns_eventmap
+      ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_eventmap', headers, baseUrl)
+      : null,
     getEventSchedules(selectedEvent.wdrgns_eventid, headers, baseUrl)
   ]);
 
-  const qr = await getQRCodeBase64(ticket.wdrgns_ticketdynamicurl);
+  async function getEventDescriptionAndOpeningHours(eventId, headers, baseUrl) {
+  try {
+    const selectFields = [
+      'wdrgns_descriptionblurb',
+      'wdrgns_openinghoursoffice',
+      'wdrgns_openinghoursofficebranding',
+      'wdrgns_openinghourscafe',
+      'wdrgns_openinghoursfuelshop',
+      'wdrgns_openinghourstyres',
+      'wdrgns_openinghourstyrebranding'
+    ].join(',');
+ 
+    const url = `${baseUrl}/wdrgns_events(${eventId})?$select=${selectFields}`;
+ 
+    const res = await axios.get(url, { headers });
+ 
+    return {
+      description: res.data?.wdrgns_descriptionblurb || null,
+      openingHours: {
+        office: res.data?.wdrgns_openinghoursoffice || null,
+        officeBranding: res.data?.wdrgns_openinghoursofficebranding || null,
+        cafe: res.data?.wdrgns_openinghourscafe || null,
+        fuelShop: res.data?.wdrgns_openinghoursfuelshop || null,
+        tyres: res.data?.wdrgns_openinghourstyres || null,
+        tyreBranding: res.data?.wdrgns_openinghourstyrebranding || null
+      }
+    };
+  } catch (err) {
+    console.error("Failed to fetch event description/opening hours:", err.message);
+    return {
+      description: null,
+      openingHours: {
+        office: null,
+        officeBranding: null,
+        cafe: null,
+        fuelShop: null,
+        tyres: null,
+        tyreBranding: null
+      }
+    };
+  }
+}
+ 
+  const { description, openingHours } = await getEventDescriptionAndOpeningHours(
+      selectedEvent.wdrgns_eventid,
+      headers,
+      baseUrl
+    );
 
-  const result = {
+  const qr = await getQRCodeBase64(baseUrl);
+
+  const result =  {
     qrCode: qr,
     ticket: {
       id: ticket.wdrgns_ticketid,
@@ -181,58 +285,60 @@ export async function GET(req, {params}) {
       onlineUrl: ticket.wdrgns_onlineticketurl,
       dynamicUrl: ticket.wdrgns_ticketdynamicurl
     },
-    ticketType: ticketType ? {
-      validFrom: ticketType.wdrgns_validfrom,
-      validTo: ticketType.wdrgns_validto,
-      enableAskAdam: ticketType.wdrgns_enableaskadam === 948090000 ? "enabled" : ticketType.wdrgns_enableaskadam === 948090001 ? "disabled" : null
-    } : null,
-    contact: contact ? {
-      id: contact.contactid,
-      fullname: contact.fullname
-    } : null,
+    ticketType: ticketType
+      ? {
+          validFrom: ticketType.wdrgns_validfrom,
+          validTo: ticketType.wdrgns_validto,
+          enableAskAdam:
+            ticketType.wdrgns_enableaskadam === 948090000
+              ? 'enabled'
+              : ticketType.wdrgns_enableaskadam === 948090001
+              ? 'disabled'
+              : null
+        }
+      : null,
+    contact: contact
+      ? {
+          id: contact.contactid,
+          fullname: contact.fullname
+        }
+      : null,
     event: {
       id: selectedEvent.wdrgns_eventid,
       name: selectedEvent.wdrgns_event,
       startDate: selectedEvent.wdrgns_startdate,
       endDate: selectedEvent.wdrgns_enddate,
-      description: selectedEvent.wdrgns_descriptionblurb,
-      openingHours: {
-        office: selectedEvent.wdrgns_openinghoursoffice,
-        officeBranding: selectedEvent.wdrgns_openinghoursofficebranding,
-        cafe: selectedEvent.wdrgns_openinghourscafe,
-        fuelShop: selectedEvent.wdrgns_openinghoursfuelshop,
-        tyres: selectedEvent.wdrgns_openinghourstyres,
-        tyreBranding: selectedEvent.wdrgns_openinghourstyrebranding
-      },
+      description: description?.replace(/<\/?[^>]+(>|$)/g, '') || null,
+      openingHours,
       image: eventImageBase64 || null,
       logo: eventLogoBase64 || null,
       map: eventMapBase64 || null
     },
-    promoter: promoter ? {
-      id: promoter.accountid,
-      name: promoter.name,
-      logo: promoterLogo ? "data:image/jpeg;base64," + promoterLogo : null
-    } : null,
-    location: location ? {
-      id: location.wdrgns_locationid,
-      name: location.wdrgns_location,
-      addressLine1: location.wdrgns_addressline1,
-      addressLine2: location.wdrgns_addressline2,
-      suburbId: location._wdrgns_suburbid_value
-    } : null,
-    eventAlerts: alerts.map((alert, i) => ({
-      ...alert,
-      alertImageBase64: alertImagesBase64[i] || null
-    })),
+    promoter: promoter
+      ? {
+          id: promoter.accountid,
+          name: promoter.name,
+          logo: promoterLogo ? 'data:image/jpeg;base64,' + promoterLogo : null
+        }
+      : null,
+    location: location
+      ? {
+          id: location.wdrgns_locationid,
+          name: location.wdrgns_location,
+          addressLine1: location.wdrgns_addressline1,
+          addressLine2: location.wdrgns_addressline2,
+          suburbId: location._wdrgns_suburbid_value
+        }
+      : null,
+    eventAlerts: alerts,
     eventSchedules: schedules,
     ticketLinks,
     primarySponsors,
     sponsors
   };
 
-
+  
   return NextResponse.json(result, {
-    status: 200
+    status: 200,
   })
 }
-

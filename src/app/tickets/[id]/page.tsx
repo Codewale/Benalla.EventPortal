@@ -32,7 +32,6 @@ function formatTimeFromISOString(isoString, options = {}) {
   });
 }
 
-
 export default async function TicketPage({ params }) {
   let ticketDetails;
   let displayOrderDetails;
@@ -41,9 +40,8 @@ export default async function TicketPage({ params }) {
   try {
     ticketDetails = await getTicket(params.id);
     displayOrderDetails = await getDisplayOrder(params.id);
-    alertMessageList = displayOrderDetails.data?.eventAlerts;
+    alertMessageList = ticketDetails.data?.eventAlerts;
     ticketLinks = displayOrderDetails.data?.ticketLinks;
-
 
     
   } catch (error) {
@@ -54,8 +52,9 @@ export default async function TicketPage({ params }) {
     );
   }
 
+  
 
-  const sortedDisplayOrder = displayOrderDetails.data?.eventSchedules.sort((a, b) => a.displayOrder - b.displayOrder);
+  // const sortedDisplayOrder = displayOrderDetails.data?.eventSchedules.sort((a, b) => a.displayOrder - b.displayOrder);
 
 
   // Map API response fields
@@ -69,22 +68,22 @@ export default async function TicketPage({ params }) {
   const sponsors = ticketDetails.data.sponsors;
   const primarySponsors = ticketDetails.data.primarySponsors;
   const qrCode = ticketDetails.data.qrCode;
+  const eventSchedules = ticketDetails.data.eventSchedules;
 
-  console.log(ticketDetails.data,qrCode);
 
+  console.log(eventSchedules);
+  
   const eventImage = event?.image ? `${event.image}` : "";
   const eventLogo = event?.logo ? `${event.logo}` : "";
   const promoterLogo = promoter?.logo
-    ? `${promoter.logo}`
-    : "";
-
+  ? `${promoter.logo}`
+  : "";
   const locationMap = event?.map ? `${event.map}` : "";
   const qr = qrCode ? `${qrCode}` : "";
 
-
   return (
     <>
-          {alertMessageList &&  
+          {/* {alertMessageList &&  
             <ul className="flex justify-center items-center bg-gray-100">
               <div className="space-y-3 w-full max-w-sm">
                 {alertMessageList.map(item => (
@@ -104,13 +103,61 @@ export default async function TicketPage({ params }) {
                 ))}
               </div>
             </ul>
-          }
+          } */}
+
+            {/* have to check if there is any alert then need to show the table where table item will be alert image and alert message */}
+
+            
+           
+            
 
 
 
 
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">  
-        <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
+
+      <div className="flex flex-col justify-start items-center min-h-screen bg-gray-100 px-4 py-12">  
+            {alertMessageList && 
+
+              <div className="flex justify-center bg-transparent">
+                 <table className="w-1/3 divide-y divide-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Alert Image
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Alert Message 
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {alertMessageList.map((item) => (
+                      <tr key={item.id} style={{backgroundColor: `${item.alertColour}`}}>
+                        
+                        {item.alertImageBase64 ? 
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <img
+                              src={promoterLogo}
+                              alt="Promoter Logo"
+                              className="w-8 h-8 rounded-full mr-2"
+                            />
+                        </td>
+
+                        : 
+                        <p className="text-gray-300">Image of the alert</p>
+
+                        }
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.alertText}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div> 
+            }
+
+
+            <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12" >
+                <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
           <div className="flex items-center mb-6">
             {eventImage && (
               <img
@@ -133,7 +180,7 @@ export default async function TicketPage({ params }) {
             <img
               src={eventImage}
               alt="Event"
-              className="w-full h-48 object-cover rounded-lg mb-6"
+              className="w-full h-48 object-contain rounded-lg mb-6"
             />
           )}
 
@@ -258,9 +305,14 @@ export default async function TicketPage({ params }) {
 
           {/* Wrap tables in a scrollable container to prevent overflow */}
           <div className="overflow-x-auto">
+
             <table className="min-w-full mt-5 divide-y divide-gray-200">
+              <caption className="text-gray-900 font-medium">Table of event Schedule</caption>
               <thead className="bg-gray-100">
                 <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Event Number
+                  </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Item
                   </th>
@@ -271,9 +323,6 @@ export default async function TicketPage({ params }) {
                     End 
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Event Number
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Session 
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -282,20 +331,21 @@ export default async function TicketPage({ params }) {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {sortedDisplayOrder.map((item) => (
+                {eventSchedules.map((item) => (
                   <tr key={item.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber ? `${item.eventNumber}` : "-" }</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session ? `${item.session}` : "-" }</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time ? `${item.time}` : "-" }</td>
                   </tr>
                 ))}
               </tbody>
             </table>    
 
             <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <caption className="text-gray-900 font-medium">Table of Ticket Link</caption>
               <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -332,6 +382,7 @@ export default async function TicketPage({ params }) {
             </table>
 
             <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <caption className="text-gray-900 font-medium">Table of Sponsors</caption>
               <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -348,7 +399,12 @@ export default async function TicketPage({ params }) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
                     {item.image ? 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.linkImage}</td>
+                        <img
+                          src={item.image}
+                          alt="Map of Location"
+                          className="w-8 h-8 object-cover rounded-lg"
+                        />
+                      </td>
                     : 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>  
                   }                   
@@ -357,9 +413,10 @@ export default async function TicketPage({ params }) {
               </tbody>
             </table>    
 
-              {primarySponsors.lenght > 0 && 
+              {primarySponsors.length > 0 && 
               
-                <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+              <caption className="text-gray-900 font-medium">Table of Primary Sponsor</caption>
               <thead className="bg-gray-100">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -376,7 +433,12 @@ export default async function TicketPage({ params }) {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
                     {item.image ? 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {item.linkImage}</td>
+                        <img
+                          src={item.image}
+                          alt="Image of Primary Sponsors"
+                          className="w-8 h-8 rounded-full mr-2"
+                        />
+                      </td>
                     : 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>                    
                   }                   
@@ -390,6 +452,9 @@ export default async function TicketPage({ params }) {
           {/* Sponsors section can be added here if available in API */}
         </div>
         <ChatModal params={params}/>
+            </div>
+
+        
       </div>
     </>
   );

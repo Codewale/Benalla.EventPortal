@@ -29,8 +29,11 @@ export default function ChatModal({ params }) {
   async function getQues() {
     try {
       const resp = await getChats(params.id);
-      // console.log({ resp });
-      setData(resp?.data);
+      console.log({ resp });
+      if(resp) {
+        setData(resp?.data);
+      }
+
     } catch (error) {
       console.error(error);
     }
@@ -84,7 +87,7 @@ export default function ChatModal({ params }) {
             </div>
 
             <ul className="h-[300px] overflow-y-auto">
-              {data.map((item) => (
+              {data &&  data.length > 0  && data.map((item) => (
                 <div key={item.GUID} className="border px-4 py-2 my-4">
                   <div className="flex justify-between items-center">
                     <div>{item?.Question}</div>
