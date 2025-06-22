@@ -35,20 +35,19 @@ function formatTimeFromISOString(isoString, options = {}) {
 
 export default async function TicketPage({ params }) {
   let eventWithText;
-  let displayOrderDetails;
+  let displayOrderDetails = [];
 
 
   try {
     eventWithText = await getEventsWithText(params.id);
-     displayOrderDetails = await getDisplayOrder(params.id);
-
-    
-    console.log(eventWithText.data);
+    //  displayOrderDetails = await getDisplayOrder(params.id);
 
   } catch (error) {
+    console.log(error);
+    
     return (
       <div className="text-center mt-10 text-red-500">
-        Error loading ticket.
+        Error loading event.
       </div>
     );
   }
@@ -87,7 +86,7 @@ export default async function TicketPage({ params }) {
               <img
                 src={eventLogo}
                 alt="Event Logo"
-                className="w-16 h-16 rounded-full mr-4 border"
+                className="w-16 h-16 rounded-full mr-4 border object-cover"
               />
             )}
             <div>
@@ -284,7 +283,7 @@ export default async function TicketPage({ params }) {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {eventSchedules.map((item) => (
+                {eventSchedules?.map((item) => (
                   <tr key={item.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber ? `${item.eventNumber}` : "-" }</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>

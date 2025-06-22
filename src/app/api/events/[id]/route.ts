@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 const axios = require('axios');
 
 // we are using eventId , so that's why I didn't omit it, please check it 
-const eventId = '1234a5db-057b-ef11-ac20-6045bdc34dd8';
 
 async function getAccessToken() {
   const url = `https://login.microsoftonline.com/${process.env.TENANT_ID}/oauth2/v2.0/token`;
@@ -28,7 +27,7 @@ async function fetchImageAsBase64(entitySetName, recordId, columnName, headers, 
   }
 }
 
-async function getEventDetails(headers, baseUrl) {
+async function getEventDetails(headers, baseUrl, eventId) {
   const res = await axios.get(
     `${baseUrl}/wdrgns_events(${eventId})?$select=wdrgns_event,wdrgns_eventid,wdrgns_startdate,wdrgns_enddate,_wdrgns_promoterid_value,_wdrgns_locationid_value,wdrgns_openinghourscafe,wdrgns_openinghoursfuelshop,wdrgns_openinghoursoffice,wdrgns_openinghoursofficebranding,wdrgns_openinghourstyres,wdrgns_openinghourstyrebranding,wdrgns_image,wdrgns_logo,wdrgns_eventmap,wdrgns_onsaleto,wdrgns_onsalefrom,wdrgns_descriptionblurb`,
     { headers }
@@ -68,7 +67,7 @@ async function getPromoterAndLocation(event, headers, baseUrl) {
   return { promoter, location, promoterLogo };
 }
 
-async function getEventAlerts(headers, baseUrl) {
+async function getEventAlerts(headers, baseUrl, eventId) {
   const filter = `_wdrgns_event_value eq ${eventId} and statecode eq 0`;
   const select = 'wdrgns_alertcolour,wdrgns_alertimage,wdrgns_alerttext,wdrgns_endtime,wdrgns_starttime,_wdrgns_event_value,wdrgns_eventalertsid';
   const url = `${baseUrl}/wdrgns_eventalertses?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=wdrgns_starttime asc&$top=1`;
@@ -76,7 +75,7 @@ async function getEventAlerts(headers, baseUrl) {
   return res.data.value || [];
 }
 
-async function getEventSchedules(headers, baseUrl) {
+async function getEventSchedules(headers, baseUrl, eventId) {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
   const todayISOString = today.toISOString();
@@ -133,11 +132,11 @@ export async function GET(req, {params}) {
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
   const headers = { Authorization: `Bearer ${token}` };
 
-  const event = await getEventDetails(headers, baseUrl);
+  const event = await getEventDetails(headers, baseUrl, eventId);
   const [alerts, schedules, { promoter, location, promoterLogo },
          eventImage, eventLogo, eventMap, primarySponsors, sponsors] = await Promise.all([
-    getEventAlerts(headers, baseUrl),
-    getEventSchedules(headers, baseUrl),
+    getEventAlerts(headers, baseUrl, eventId),
+    getEventSchedules(headers, baseUrl, eventId),
     getPromoterAndLocation(event, headers, baseUrl),
     event.wdrgns_image ? fetchImageAsBase64('wdrgns_events', event.wdrgns_eventid, 'wdrgns_image', headers, baseUrl) : null,
     event.wdrgns_logo ? fetchImageAsBase64('wdrgns_events', event.wdrgns_eventid, 'wdrgns_logo', headers, baseUrl) : null,
