@@ -67,9 +67,11 @@ export default async function TicketPage({ params }) {
   const location = ticketDetails.data.location;
   const sponsors = ticketDetails.data.sponsors;
   const primarySponsors = ticketDetails.data.primarySponsors;
-  const qrCode = `${process.env.QR_Base_URL}/${params.id}`; ;
+  const qrCode = ticketDetails.data.qrCode;
   const eventSchedules = ticketDetails.data.eventSchedules;
 
+  console.log(qrCode);
+  
 
   console.log(eventSchedules);
   

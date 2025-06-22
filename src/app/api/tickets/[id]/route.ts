@@ -128,10 +128,11 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
   );
 }
 
-async function getQRCodeBase64(text) {
+async function getQRCodeBase64(text, headers) {
   if (!text) return null;
   try {
-    const res = await axios.get(`https://quickchart.io/qr?text=${encodeURIComponent(text)}`, { responseType: 'arraybuffer' });
+    const qrText = process.env.QR_BASE_URL + text
+    const res = await axios.get(`https://quickchart.io/qr?text=${encodeURIComponent(qrText)}`, { responseType: 'arraybuffer' });
     return `data:image/png;base64,${Buffer.from(res.data).toString('base64')}`;
   } catch {
     return null;
@@ -274,7 +275,7 @@ export async function GET(req, {params} ){
       baseUrl
     );
 
-  const qr = await getQRCodeBase64(baseUrl);
+  const qr = await getQRCodeBase64(ticketId, headers);
 
   const result =  {
     qrCode: qr,
