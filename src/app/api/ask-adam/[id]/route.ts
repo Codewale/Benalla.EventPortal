@@ -112,6 +112,8 @@ export async function POST(req, {params}) {
 
       const firstAskAdamId = await getFirstAskAdamRecordId(ticketId, token);
 
+      console.log(`First AskAdam record ID: ${firstAskAdamId}`);
+      
       const createPayload = {
         wdrgns_question: body.questionText,
         "wdrgns_ticket@odata.bind": `/wdrgns_tickets(${ticketId})`,
@@ -152,6 +154,42 @@ export async function POST(req, {params}) {
         );
       }
     }
+  }else {
+     const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "OData-MaxVersion": "4.0",
+        "OData-Version": "4.0",
+        Accept: "application/json",
+      };
+      
+      const createPayload = {
+        wdrgns_question: body.questionText,
+        "wdrgns_ticket@odata.bind": `/wdrgns_tickets(${ticketId})`,
+      };
+
+      try {
+        const res = await axios.post(
+          `${baseUrl}/wdrgns_askadams`,
+          createPayload,
+          { headers }
+        );
+        console.log("wdrgns_askadam record created successfully.");
+        console.log(
+          "Created record location:",
+          res.headers["odata-entityid"] || res.headers["location"]
+        );
+        return NextResponse.json({
+          message: "AskAdam record created successfully",
+          id: res.data.wdrgns_askadamid,
+        });
+      } catch (error: any) {
+        console.error(
+          "Failed to create wdrgns_askadam record:",
+          error.response?.data?.error || error.message
+        );
+      }
   }
 }
 
