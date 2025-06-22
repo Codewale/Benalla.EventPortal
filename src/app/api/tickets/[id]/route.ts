@@ -14,7 +14,7 @@ async function getAccessToken() {
   return res.data.access_token;
 }
 
-const baseUrl = process.env.APPSETTING_BASE_URL;
+// const baseUrl = process.env.APPSETTING_BASE_URL;
 
 async function fetchImageAsBase64(entitySetName, recordId, columnName, headers, baseUrl) {
   try {
