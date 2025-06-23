@@ -43,6 +43,7 @@ export default async function TicketPage({ params }) {
     alertMessageList = ticketDetails.data?.eventAlerts;
     ticketLinks = displayOrderDetails.data?.ticketLinks;
 
+   
     
   } catch (error) {
     return (
@@ -53,6 +54,10 @@ export default async function TicketPage({ params }) {
   }
 
   
+
+
+
+
 
   // const sortedDisplayOrder = displayOrderDetails.data?.eventSchedules.sort((a, b) => a.displayOrder - b.displayOrder);
 
@@ -70,10 +75,9 @@ export default async function TicketPage({ params }) {
   const qrCode = ticketDetails.data.qrCode;
   const eventSchedules = ticketDetails.data.eventSchedules;
 
-  console.log(qrCode);
+  
   
 
-  console.log(eventSchedules);
   
   const eventImage = event?.image ? `${event.image}` : "";
   const eventLogo = event?.logo ? `${event.logo}` : "";
@@ -82,7 +86,8 @@ export default async function TicketPage({ params }) {
   : "";
   const locationMap = event?.map ? `${event.map}` : "";
   const qr = qrCode ? `${qrCode}` : "";
-
+  
+  console.log(typeof(eventLogo));
   return (
     <>
           {/* {alertMessageList &&  

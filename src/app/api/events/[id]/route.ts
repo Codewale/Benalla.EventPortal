@@ -19,13 +19,35 @@ async function getAccessToken() {
 async function fetchImageAsBase64(entitySetName, recordId, columnName, headers, baseUrl) {
   try {
     const url = `${baseUrl}/${entitySetName}(${recordId})/${columnName}/$value`;
-    const res = await axios.get(url, { headers, responseType: 'arraybuffer' });
-    const base64 = Buffer.from(res.data, 'binary').toString('base64');
-    return `data:image/jpeg;base64,${base64}`;
-  } catch {
+    const res = await axios.get(url, {
+      headers,
+      responseType: 'arraybuffer'
+    });
+
+    const buffer = Buffer.from(res.data);
+    const header = buffer.toString('utf8', 0, 20).trim();
+
+    let contentType = res.headers['content-type'];
+
+    // Fallback: detect SVG or PNG manually if Content-Type is missing
+    if (!contentType || contentType === 'application/octet-stream') {
+      if (header.startsWith('<?xml') || header.includes('<svg')) {
+        contentType = 'image/svg+xml';
+      } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+        contentType = 'image/png';
+      } else {
+        contentType = 'application/octet-stream';
+      }
+    }
+
+    const base64 = buffer.toString('base64');
+    return `data:${contentType};base64,${base64}`;
+  } catch (err) {
+    console.error(`Failed to fetch image ${columnName} from ${entitySetName}(${recordId}):`, err.message);
     return null;
   }
 }
+
 
 async function getEventDetails(headers, baseUrl, eventId) {
   const res = await axios.get(
