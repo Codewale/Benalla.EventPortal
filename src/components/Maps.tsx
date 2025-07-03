@@ -1,6 +1,6 @@
 import axios from "axios";
 import React from "react";
-
+import mapsImage from "../app/images/WMR Aerial Map v4 2024-01.jpg";
 
 // Helper to fetch ticket by id from the API
 async function getTicket(id: string) {
@@ -31,7 +31,7 @@ function formatTimeFromISOString(isoString, options = {}) {
     });
 }
 
-export default async function TicketPage({ params }) {
+export default async function Maps({ params }) {
     let ticketDetails;
     let displayOrderDetails;
     let alertMessageList;
@@ -51,9 +51,6 @@ export default async function TicketPage({ params }) {
             </div>
         );
     }
-
-
-
 
 
 
@@ -86,20 +83,41 @@ export default async function TicketPage({ params }) {
     const locationMap = event?.map ? `${event.map}` : "";
     const qr = qrCode ? `${qrCode}` : "";
 
-    const groupedByDay = eventSchedules.reduce((acc, item) => {
-        const day = new Date(item.startTime).toLocaleDateString("en-US", {
-            weekday: "long",
-            timeZone: "UTC", // Adjust if needed
-        });
-
-        if (!acc[day]) acc[day] = [];
-        acc[day].push(item);
-        return acc;
-    }, {});
-
-    console.log(eventSchedules);
+    console.log(alertMessageList);
     return (
         <>
+            {/* {alertMessageList &&  
+            <ul className="flex justify-center items-center bg-gray-100">
+              <div className="space-y-3 w-full max-w-sm">
+                {alertMessageList.map(item => (
+                  <li
+                    key={item.id}
+                    style={{
+                      backgroundColor: `#${item.alertColour}` || '#FEE2E2'
+                    }}
+                    className={"rounded-lg shadow-md p-4 text-white flex justify-center items-center gap-2"}
+                    role="alert"
+                  >
+                    {item.alertImage && (
+                      <img src={item.alertImage} alt="alert icon" className="w-6 h-6" />
+                    )}
+                    <p className="text-lg font-medium">{item.alertText}</p>
+                  </li>
+                ))}
+              </div>
+            </ul>
+          } */}
+
+            {/* have to check if there is any alert then need to show the table where table item will be alert image and alert message */}
+
+
+
+
+
+
+
+
+
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
                     <div className="flex flex-col left-0 w-full z-50 gap-1">
@@ -131,7 +149,7 @@ export default async function TicketPage({ params }) {
 
 
                 <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0"
+                    className="flex justify-between items-start flex-1 w-full min-h-0 pb-10"
                     style={{
                         minHeight: 0,
                         backgroundImage: eventImage
@@ -187,56 +205,42 @@ export default async function TicketPage({ params }) {
                             )}
                         </div>
 
-
-
-                        {/* Wrap tables in a scrollable container to prevent overflow */}
-                        <div className="w-full flex flex-col items-center">
-                            {Object.entries(groupedByDay).map(([day, items]) => (
-                                <div key={day} className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4">
-                                    <div className="bg-red-700 text-white text-center font-semibold text-xs tracking-wide p-[0.18rem]">
-                                        EVENT SCHEDULE - {day.toUpperCase()}
-                                        {" "}
-                                        (
-                                        {items.length > 0
-                                            ? new Date(items[0].startTime).toLocaleDateString("en-GB", {
-                                                day: "2-digit",
-                                                month: "short",
-                                                year: "numeric",
-                                            })
-                                            : ""}
-                                        )
-                                    </div>
-                                    <table className="w-full text-xs">
-                                        <thead>
-                                            <tr className="bg-gray-600 text-white">
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">Event Category</th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">Start</th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">End</th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">Session</th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">Time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {items.map((item) => (
-                                                <tr key={item.id} className="even:bg-gray-50">
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.item}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.session}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.time}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                        <div className="flex flex-col gap-4 mb-6">
+                            <div className="flex justify-center items-center w-full mb-2">
+                                <div className="bg-[#E53935] rounded-[0.6rem] w-full py-[0.4rem] flex justify-center items-center">
+                                    <span className="text-white text-xs font-bold uppercase tracking-wider">
+                                        Maps
+                                    </span>
                                 </div>
-                            ))}
+                            </div>
+                            <div className="flex flex-col gap-6 items-center w-full">
+                                <div className="w-full flex flex-col gap-2 justify-center items-center">
+                                    <div className="bg-white rounded-xl shadow-md flex-1 flex justify-center items-center w-full min-h-[200px]">
+                                        {locationMap ? (
+                                            <img
+                                                src={locationMap}
+                                                alt="Map of Location"
+                                                className="w-full h-auto max-h-[350px] object-contain rounded-lg border border-gray-200 bg-white"
+                                                style={{ width: "100%", backgroundColor: "#fff" }}
+                                            />
+                                        ) : (
+                                            <span className="text-gray-500 italic">Map of the location</span>
+                                        )}
+                                    </div>
+                                    <div className="bg-white rounded-xl shadow-md flex-1 flex justify-center items-center w-full min-h-[200px]">
+                                        <img
+                                            src={mapsImage.src}
+                                            alt="Aerial Map"
+                                            className="w-full h-auto max-h-[350px] object-contain rounded-lg border border-gray-200 bg-white"
+                                            style={{ width: "100%", backgroundColor: "#fff" }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        {/* Sponsors section can be added here if available in API */}
                     </div>
-                    {/* <ChatModal params={params} /> */}
                 </div>
-
-
+                {/* <ChatModal params={params} /> */}
             </div>
         </>
     );

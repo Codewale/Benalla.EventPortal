@@ -40,7 +40,7 @@ export default async function TicketPage({ params }) {
         ticketDetails = await getTicket(params.id);
         displayOrderDetails = await getDisplayOrder(params.id);
         alertMessageList = ticketDetails.data?.eventAlerts;
-        ticketLinks = displayOrderDetails.data?.ticketLinks;
+        ticketLinks = ticketDetails.data?.ticketLinks;
 
 
 
@@ -86,7 +86,9 @@ export default async function TicketPage({ params }) {
     const locationMap = event?.map ? `${event.map}` : "";
     const qr = qrCode ? `${qrCode}` : "";
 
-    console.log(alertMessageList);
+    const getLinksByType = (type) => ticketLinks.filter(link => link.typeLabel === type);
+
+    console.log(ticketLinks);
     return (
         <>
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
@@ -177,66 +179,165 @@ export default async function TicketPage({ params }) {
                                 />
                             )}
                         </div>
-                        <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-6 mb-8 md:mb-0 md:mr-8">
-                            <table className="w-full divide-y divide-gray-200 table-auto">
-                                <caption className="text-gray-900 font-medium mb-2">Table of Ticket Link</caption>
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th scope="col" className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Name
-                                        </th>
-                                        <th scope="col" className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Url
-                                        </th>
-                                        <th scope="col" className="px-4 py-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Link Image
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {ticketLinks.map((item: { displayOrder: number; name: string; url: string; linkImage?: string }) => (
-                                        <tr key={item.displayOrder}>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-blue-600 underline">
-                                                <a href={`${item.url}`} target="_blank" rel="noopener noreferrer">
-                                                    {item.url}
-                                                </a>
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                                {item.linkImage ? item.linkImage : item.name}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+
+                        {getLinksByType("Information").length > 0 && (
+                            <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 md:mb-0 md:mr-8">
+                                <table className="w-full">
+                                    <tbody>
+                                        {getLinksByType("Information").map(item => (
+                                            <React.Fragment key={item.displayOrder}>
+                                                {/* Heading row */}
+                                                <tr>
+                                                    <td colSpan={2} className="py-0.5 text-center">
+                                                        <span className="font-bold text-[0.65rem] uppercase text-red-700">{item.name}</span>
+                                                    </td>
+                                                </tr>
+                                                {/* Image and link row */}
+                                                <tr className="border-b border-gray-200">
+                                                    <td className="py-1 pr-2 align-top w-12">
+                                                        {item.ticketLinkImage ? (
+                                                            <img
+                                                                src={item.ticketLinkImage}
+                                                                alt={item.name}
+                                                                className="w-8 h-8 object-contain rounded"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-8 h-8 bg-gray-200 flex items-center justify-center rounded text-gray-400 text-lg">
+                                                                <span>?</span>
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                    <td className="py-1 align-top">
+                                                        <a
+                                                            href={item.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                            style={{ textDecoration: "none" }}
+                                                        >
+                                                            {item.url}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {/* Section for "Document" ticket links */}
+                        {getLinksByType("Document").length > 0 && (
+                            <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 md:mb-0 md:mr-8">
+                                <table className="w-full">
+                                    <tbody>
+                                        {getLinksByType("Document").map(item => (
+                                            <React.Fragment key={item.displayOrder}>
+                                                {/* Heading row */}
+                                                <tr>
+                                                    <td colSpan={2} className="py-0.5 text-center">
+                                                        <span className="font-bold text-[0.65rem] uppercase text-red-700">{item.name}</span>
+                                                    </td>
+                                                </tr>
+                                                {/* Image and link row */}
+                                                <tr className="border-b border-gray-200">
+                                                    <td className="py-1 pr-2 align-top w-12">
+                                                        {item.ticketLinkImage ? (
+                                                            <img
+                                                                src={item.ticketLinkImage}
+                                                                alt={item.name}
+                                                                className="w-8 h-8 object-contain rounded"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-8 h-8 bg-gray-200 flex items-center justify-center rounded text-gray-400 text-lg">
+                                                                <span>?</span>
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                    <td className="py-1 align-top">
+                                                        <a
+                                                            href={item.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                            style={{ textDecoration: "none" }}
+                                                        >
+                                                            {item.url}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {/* Section for "Advertisement" ticket links */}
+                        {getLinksByType("Advertisement").length > 0 && (
+                            <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 md:mb-0 md:mr-8">
+                                <table className="w-full">
+                                    <tbody>
+                                        {getLinksByType("Advertisement").map(item => (
+                                            <React.Fragment key={item.displayOrder}>
+                                                {/* Heading row */}
+                                                <tr>
+                                                    <td colSpan={2} className="py-0.5 text-center">
+                                                        <span className="font-bold text-[0.65rem] uppercase text-red-700">{item.name}</span>
+                                                    </td>
+                                                </tr>
+                                                {/* Image and link row */}
+                                                <tr className="border-b border-gray-200">
+                                                    <td className="py-1 pr-2 align-top w-12">
+                                                        {item.ticketLinkImage ? (
+                                                            <img
+                                                                src={item.ticketLinkImage}
+                                                                alt={item.name}
+                                                                className="w-8 h-8 object-contain rounded"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-8 h-8 bg-gray-200 flex items-center justify-center rounded text-gray-400 text-lg">
+                                                                <span>?</span>
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                    <td className="py-1 align-top">
+                                                        <a
+                                                            href={item.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                            style={{ textDecoration: "none" }}
+                                                        >
+                                                            {item.url}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </React.Fragment>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
 
                         {/* Opening Hours Card */}
                         <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-6">
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Cafe Hours</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.cafe || "-"}</div>
+                                    <div className=" text-red-700 text-[0.55rem] uppercase font-semibold">{event?.openingHours?.tyreBranding} Tyre Hours</div>
+                                    <div className="text-gray-900 text-[0.7rem] font-bold ">{event?.openingHours?.tyres || "-"}</div>
                                 </div>
                                 <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Fuel Shop Hours</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.fuelShop || "-"}</div>
+                                    <div className=" text-red-700 text-[0.55rem] uppercase font-semibold">Cafe Hours</div>
+                                    <div className="text-gray-900 text-[0.7rem] font-bold ">{event?.openingHours?.cafe || "-"}</div>
                                 </div>
                                 <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Office Branding</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.officeBranding || "-"}</div>
+                                    <div className=" text-red-700 text-[0.55rem] uppercase font-semibold">{event?.openingHours?.officeBranding}Office Hours</div>
+                                    <div className="text-gray-900 text-[0.7rem] font-bold ">{event?.openingHours?.office || "-"}</div>
                                 </div>
                                 <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Office Hours</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.office || "-"}</div>
-                                </div>
-                                <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Tyre Hours</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.tyres || "-"}</div>
-                                </div>
-                                <div>
-                                    <div className="font-bold text-red-700 text-xs uppercase">Fuel/Tyre Branding</div>
-                                    <div className="text-gray-900 text-sm">{event?.openingHours?.tyreBranding || "-"}</div>
+                                    <div className=" text-red-700 text-[0.55rem] uppercase font-semibold">{event?.openingHours?.tyreBranding || "-"} Shop Hours</div>
+                                    <div className="text-gray-900 text-[0.7rem] font-bold ">{event?.openingHours?.fuelShop || "-"}</div>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +345,6 @@ export default async function TicketPage({ params }) {
 
                     {/* Sponsors section can be added here if available in API */}
                 </div >
-                {/* <ChatModal params={params} /> */}
             </div>
         </>
     );
