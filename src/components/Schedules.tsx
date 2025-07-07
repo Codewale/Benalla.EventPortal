@@ -2,7 +2,17 @@
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/UI/Alert";
 import React from "react";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -91,13 +101,13 @@ export default function Schedules({ params }) {
                                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
                             )}
                             <div className="flex-1 text-center">
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.name || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.secondLine || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.thirdLine || null}
                                 </h1>
                             </div>
@@ -117,7 +127,7 @@ export default function Schedules({ params }) {
                                     key={day}
                                     className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
                                 >
-                                    <div className="bg-red-700 text-white text-center font-semibold text-xs tracking-wide p-[0.18rem]">
+                                    <div className={`bg-red-700 text-white text-center font-semibold text-[0.65rem] tracking-wide p-[0.18rem] ${archivoBlack.className}`}>
                                         EVENT SCHEDULE - {day.toUpperCase()} (
                                         {items?.length > 0
                                             ? new Date(items[0].startTime).toLocaleDateString(
@@ -134,22 +144,22 @@ export default function Schedules({ params }) {
                                     <table className="w-full text-xs">
                                         <thead>
                                             <tr className="bg-gray-600 text-white">
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     Event
                                                 </th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     Category
                                                 </th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     Start
                                                 </th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     End
                                                 </th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     Session
                                                 </th>
-                                                <th className="px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem]">
+                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
                                                     Time
                                                 </th>
                                             </tr>

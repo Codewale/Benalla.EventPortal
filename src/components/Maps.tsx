@@ -5,7 +5,17 @@ import React from "react";
 import mapsImage from "../app/images/WMR Aerial Map v4 2024-01.jpg";
 import { useTicketAndDisplayData } from "../hooks/useFetch.js";
 import AlertMessages from "@/UI/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -80,13 +90,13 @@ export default function Maps({ params }) {
                                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
                             )}
                             <div className="flex-1 text-center">
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.name || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.secondLine || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.thirdLine || null}
                                 </h1>
                             </div>
@@ -102,7 +112,7 @@ export default function Maps({ params }) {
                         <div className="flex flex-col gap-4 mb-6">
                             <div className="flex justify-center items-center w-full mb-2">
                                 <div className="bg-[#E53935] rounded-[0.6rem] w-full py-[0.4rem] flex justify-center items-center">
-                                    <span className="text-white text-xs font-bold uppercase tracking-wider">
+                                    <span className={`text-white text-xs font-bold uppercase tracking-wider ${archivoBlack.className}`}>
                                         Maps
                                     </span>
                                 </div>

@@ -4,7 +4,17 @@ import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import axios from "axios";
 import React from "react";
 import AlertMessages from "@/UI/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+  subsets: ["latin"],
+  weight: ["400"],
+});
 
 export default function FirstInfo({ params }) {
 
@@ -68,13 +78,13 @@ export default function FirstInfo({ params }) {
                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
               )}
               <div className="flex-1 text-center">
-                <h1 className="text-base font-bold text-black">
+                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                   {event?.name || null}
                 </h1>
-                <h1 className="text-base font-bold text-black">
+                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                   {event?.secondLine || null}
                 </h1>
-                <h1 className="text-base font-bold text-black">
+                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                   {event?.thirdLine || null}
                 </h1>
               </div>
@@ -100,50 +110,50 @@ export default function FirstInfo({ params }) {
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   CONTACT
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {contact?.fullname || "-"}
                 </div>
               </div>
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   REMAINING SCANS
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {ticket?.remainingScans ?? "N/A"}
                 </div>
               </div>
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   VALID FROM
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {ticketType?.validFrom?.slice(0, 10) || "-"}
                 </div>
               </div>
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   VALID TO
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {ticketType?.validTo?.slice(0, 10) || "-"}
                 </div>
               </div>
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   LOCATION
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {location?.name || "-"}
                 </div>
               </div>
               <div>
-                <div className="font-bold text-[#da2127] text-[0.7rem]">
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
                   DESCRIPTION
                 </div>
-                <div className="text-white font-bold text-sm">
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {event?.description || "-"}
                 </div>
               </div>

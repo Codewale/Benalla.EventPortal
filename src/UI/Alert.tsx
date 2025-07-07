@@ -1,5 +1,15 @@
 import React from "react";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 interface AlertItem {
     id: string;
     alertText?: string;
@@ -41,7 +51,7 @@ const AlertMessages: React.FC<AlertMessagesProps> = ({ alertMessageList }) => {
                         </div>
                     )}
 
-                    <p className="text-[0.6rem] font-bold text-white italic">
+                    <p className={`text-xs text-white italic font-thin ${archivoBlack.className}`}>
                         {item.alertText || "No alert message provided."}
                     </p>
                 </div>

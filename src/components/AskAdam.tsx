@@ -2,7 +2,17 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AlertMessages from "@/UI/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 async function getTicket(id: string) {
     const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
     return await axios.get(`${baseUrl}/api/tickets/${id}`);
@@ -128,13 +138,13 @@ export default function AskAdam({ params }) {
                                 />
                             )}
                             <div className="flex-1 text-center">
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-base font-bold text-black ${archivoBlack.className}`}>
                                     {event?.name || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-base font-bold text-black ${archivoBlack.className}`}>
                                     {event?.secondLine || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-base font-bold text-black ${archivoBlack.className}`}>
                                     {event?.thirdLine || null}
                                 </h1>
                             </div>

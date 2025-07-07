@@ -4,7 +4,17 @@ import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import axios from "axios";
 import React from "react";
 import AlertMessages from "@/UI/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -84,13 +94,13 @@ export default function PromoterNsopnsors({ params }) {
                                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
                             )}
                             <div className="flex-1 text-center">
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.name || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.secondLine || null}
                                 </h1>
-                                <h1 className="text-base font-bold text-black">
+                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
                                     {event?.thirdLine || null}
                                 </h1>
                             </div>
@@ -106,12 +116,12 @@ export default function PromoterNsopnsors({ params }) {
                         <div className="flex flex-col gap-6 w-full max-w-lg mx-auto mt-8">
                             {/* Event Promoters */}
                             <div className="bg-white rounded-2xl shadow-md p-4">
-                                <div className="text-[0.65rem] font-bold text-red-600 tracking-wide">
+                                <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
                                     EVENT PROMOTERS
                                 </div>
                                 <div className="flex flex-col">
                                     <div className="flex justify-between items-center border-b border-t border-gray-500 p-2">
-                                        <span className="font-semibold text-gray-800 text-xs">
+                                        <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
                                             {promoter?.name || "-"}
                                         </span>
                                         {promoterLogo && (
@@ -129,7 +139,7 @@ export default function PromoterNsopnsors({ params }) {
                             {/* Key Sponsors */}
                             {primarySponsors?.length > 0 && (
                                 <div className="bg-white rounded-2xl shadow-md p-4">
-                                    <div className="text-[0.65rem] font-bold text-red-600 tracking-wide">
+                                    <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
                                         KEY SPONSORS
                                     </div>
                                     <div className="flex flex-col">
@@ -139,7 +149,7 @@ export default function PromoterNsopnsors({ params }) {
                                                     key={item.name}
                                                     className="flex justify-between items-center border-b border-t border-gray-500 py-2"
                                                 >
-                                                    <span className="font-semibold text-gray-800 text-xs">
+                                                    <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
                                                         {item.name}
                                                     </span>
                                                     {item.image && (
@@ -160,7 +170,7 @@ export default function PromoterNsopnsors({ params }) {
                             {/* Sponsors */}
                             {sponsors?.length > 0 && (
                                 <div className="bg-white rounded-2xl shadow-md p-4">
-                                    <div className="text-[0.65rem] font-bold text-red-600 tracking-wide">
+                                    <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
                                         SPONSORS
                                     </div>
                                     <div className="flex flex-col">
@@ -169,7 +179,7 @@ export default function PromoterNsopnsors({ params }) {
                                                 key={item.name}
                                                 className="flex justify-between items-center border-b border-t border-gray-500 py-2"
                                             >
-                                                <span className="font-semibold text-gray-800 text-xs">
+                                                <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
                                                     {item.name}
                                                 </span>
                                                 {item.image && (

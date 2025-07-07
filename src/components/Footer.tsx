@@ -1,5 +1,15 @@
 "use client";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
+
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 export default function Footer({
     handleDecrement,
     handleIncrement,
@@ -34,7 +44,7 @@ export default function Footer({
                         />
                     </svg>
                 </button>
-                <p>
+                <p className={`text-white text-sm font-semibold ${spaceGrotesk.className}`}>
                     {(() => {
                         const pageTitles = [
                             "Entry Scan",
