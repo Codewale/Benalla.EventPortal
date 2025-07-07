@@ -131,22 +131,50 @@ async function getEventSchedules(eventId, headers, baseUrl) {
 
 async function getTicketLinks(ticketTypeId, headers, baseUrl) {
   const filter = `statecode eq 0 and _wdrgns_tickettype_value eq '${ticketTypeId}'`;
-  const select = 'wdrgns_displayorder,wdrgns_name,wdrgns_url,wdrgns_linkimage';
+  const select = 'wdrgns_displayorder,wdrgns_name,wdrgns_url,wdrgns_linkimage,wdrgns_type';
   const url = `${baseUrl}/wdrgns_ticketlinkses?$filter=${encodeURIComponent(filter)}&$select=${select}&$orderby=wdrgns_displayorder asc`;
-  const res = await axios.get(url, { headers });
+
+  const res = await axios.get(url, {
+    headers: {
+      ...headers,
+      'Prefer': 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
+    },
+  });
+
   const rawLinks = res.data.value || [];
 
-  // Map keys to friendly names & convert link image to base64 if exists
-  return Promise.all(
-    rawLinks.map(async (link) => ({
-      displayOrder: link.wdrgns_displayorder,
-      name: link.wdrgns_name,
-      url: link.wdrgns_url,
-      linkImageBase64: link.wdrgns_linkimage
-        ? `data:image/jpeg;base64,${link.wdrgns_linkimage}`
-        : null
-    }))
+  const ticketLinks = await Promise.all(
+    rawLinks.map(async (link) => {
+      let linkImageBase64 = null;
+
+      if (link.wdrgns_linkimage) {
+        try {
+          const imageResponse = await axios.get(
+            `${baseUrl}/wdrgns_ticketlinkses(${link.wdrgns_ticketlinksid})/wdrgns_linkimage/$value`,
+            { headers, responseType: 'arraybuffer' }
+          );
+
+          const contentType = imageResponse.headers['content-type'] || 'image/png';
+          const base64Image = Buffer.from(imageResponse.data, 'binary').toString('base64');
+          linkImageBase64 = `data:${contentType};base64,${base64Image}`;
+        } catch (error) {
+          console.error(`Failed to fetch image for ticket link ${link.wdrgns_ticketlinksid}`, error.message);
+        }
+      }
+
+      return {
+        displayOrder: link.wdrgns_displayorder,
+        name: link.wdrgns_name,
+        url: link.wdrgns_url,
+        linkImageBase64,
+        type: link.wdrgns_type,
+        typeLabel: link['wdrgns_type@OData.Community.Display.V1.FormattedValue'] || null,
+      };
+    })
   );
+  console.log('ticketLinks', ticketLinks);
+
+  return ticketLinks;
 }
 
 async function getQRCodeBase64(text, headers) {
@@ -162,7 +190,7 @@ async function getQRCodeBase64(text, headers) {
 
 // async function getTicketDetails(ticketId) {
 
-export async function GET(req, {params} ){
+export async function GET(req, { params }) {
 
   const ticketId = params.id;
   const token = await getAccessToken();
@@ -248,57 +276,63 @@ export async function GET(req, {params} ){
   ]);
 
   async function getEventDescriptionAndOpeningHours(eventId, headers, baseUrl) {
-  try {
-    const selectFields = [
-      'wdrgns_descriptionblurb',
-      'wdrgns_openinghoursoffice',
-      'wdrgns_openinghoursofficebranding',
-      'wdrgns_openinghourscafe',
-      'wdrgns_openinghoursfuelshop',
-      'wdrgns_openinghourstyres',
-      'wdrgns_openinghourstyrebranding'
-    ].join(',');
- 
-    const url = `${baseUrl}/wdrgns_events(${eventId})?$select=${selectFields}`;
- 
-    const res = await axios.get(url, { headers });
- 
-    return {
-      description: res.data?.wdrgns_descriptionblurb || null,
-      openingHours: {
-        office: res.data?.wdrgns_openinghoursoffice || null,
-        officeBranding: res.data?.wdrgns_openinghoursofficebranding || null,
-        cafe: res.data?.wdrgns_openinghourscafe || null,
-        fuelShop: res.data?.wdrgns_openinghoursfuelshop || null,
-        tyres: res.data?.wdrgns_openinghourstyres || null,
-        tyreBranding: res.data?.wdrgns_openinghourstyrebranding || null
-      }
-    };
-  } catch (err) {
-    console.error("Failed to fetch event description/opening hours:", err.message);
-    return {
-      description: null,
-      openingHours: {
-        office: null,
-        officeBranding: null,
-        cafe: null,
-        fuelShop: null,
-        tyres: null,
-        tyreBranding: null
-      }
-    };
+    try {
+      const selectFields = [
+        'wdrgns_descriptionblurb',
+        'wdrgns_openinghoursoffice',
+        'wdrgns_openinghoursofficebranding',
+        'wdrgns_openinghourscafe',
+        'wdrgns_openinghoursfuelshop',
+        'wdrgns_openinghourstyres',
+        'wdrgns_openinghourstyrebranding',
+        'wdrgns_ticket2ndline',
+        'wdrgns_ticket3rdline',
+      ].join(',');
+
+      const url = `${baseUrl}/wdrgns_events(${eventId})?$select=${selectFields}`;
+
+      const res = await axios.get(url, { headers });
+
+      return {
+        description: res.data?.wdrgns_descriptionblurb || null,
+        openingHours: {
+          office: res.data?.wdrgns_openinghoursoffice || null,
+          officeBranding: res.data?.wdrgns_openinghoursofficebranding || null,
+          cafe: res.data?.wdrgns_openinghourscafe || null,
+          fuelShop: res.data?.wdrgns_openinghoursfuelshop || null,
+          tyres: res.data?.wdrgns_openinghourstyres || null,
+          tyreBranding: res.data?.wdrgns_openinghourstyrebranding || null
+        },
+        secondLine: res.data?.wdrgns_ticket2ndline || null,
+        thirdLine: res.data?.wdrgns_ticket3rdline || null
+      };
+    } catch (err) {
+      console.error("Failed to fetch event description/opening hours:", err.message);
+      return {
+        description: null,
+        openingHours: {
+          office: null,
+          officeBranding: null,
+          cafe: null,
+          fuelShop: null,
+          tyres: null,
+          tyreBranding: null
+        },
+        secondLine: null,
+        thirdLine: null
+      };
+    }
   }
-}
- 
-  const { description, openingHours } = await getEventDescriptionAndOpeningHours(
-      selectedEvent.wdrgns_eventid,
-      headers,
-      baseUrl
-    );
+
+  const { description, openingHours, secondLine, thirdLine } = await getEventDescriptionAndOpeningHours(
+    selectedEvent.wdrgns_eventid,
+    headers,
+    baseUrl
+  );
 
   const qr = await getQRCodeBase64(ticketId, headers);
 
-  const result =  {
+  const result = {
     qrCode: qr,
     ticket: {
       id: ticket.wdrgns_ticketid,
@@ -309,21 +343,21 @@ export async function GET(req, {params} ){
     },
     ticketType: ticketType
       ? {
-          validFrom: ticketType.wdrgns_validfrom,
-          validTo: ticketType.wdrgns_validto,
-          enableAskAdam:
-            ticketType.wdrgns_enableaskadam === 948090000
-              ? 'enabled'
-              : ticketType.wdrgns_enableaskadam === 948090001
+        validFrom: ticketType.wdrgns_validfrom,
+        validTo: ticketType.wdrgns_validto,
+        enableAskAdam:
+          ticketType.wdrgns_enableaskadam === 948090000
+            ? 'enabled'
+            : ticketType.wdrgns_enableaskadam === 948090001
               ? 'disabled'
               : null
-        }
+      }
       : null,
     contact: contact
       ? {
-          id: contact.contactid,
-          fullname: contact.fullname
-        }
+        id: contact.contactid,
+        fullname: contact.fullname
+      }
       : null,
     event: {
       id: selectedEvent.wdrgns_eventid,
@@ -334,23 +368,25 @@ export async function GET(req, {params} ){
       openingHours,
       image: eventImageBase64 || null,
       logo: eventLogoBase64 || null,
-      map: eventMapBase64 || null
+      map: eventMapBase64 || null,
+      secondLine: secondLine || null,
+      thirdLine: thirdLine || null,
     },
     promoter: promoter
       ? {
-          id: promoter.accountid,
-          name: promoter.name,
-          logo: promoterLogo ? 'data:image/jpeg;base64,' + promoterLogo : null
-        }
+        id: promoter.accountid,
+        name: promoter.name,
+        logo: promoterLogo ? 'data:image/jpeg;base64,' + promoterLogo : null
+      }
       : null,
     location: location
       ? {
-          id: location.wdrgns_locationid,
-          name: location.wdrgns_location,
-          addressLine1: location.wdrgns_addressline1,
-          addressLine2: location.wdrgns_addressline2,
-          suburbId: location._wdrgns_suburbid_value
-        }
+        id: location.wdrgns_locationid,
+        name: location.wdrgns_location,
+        addressLine1: location.wdrgns_addressline1,
+        addressLine2: location.wdrgns_addressline2,
+        suburbId: location._wdrgns_suburbid_value
+      }
       : null,
     eventAlerts: alerts,
     eventSchedules: schedules,
@@ -359,7 +395,7 @@ export async function GET(req, {params} ){
     sponsors
   };
 
-  
+
   return NextResponse.json(result, {
     status: 200,
   })

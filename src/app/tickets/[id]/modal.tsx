@@ -17,20 +17,20 @@ async function postChatById(id: string, data: any) {
 }
 
 export default function ChatModal({ params }) {
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
 
-  const handleToggleModal = () => {
-    setModalOpen((prevState) => !prevState);
-    setMessage("");
-    // setData([]); // Clear data when modal is closed
-  };
+  // const handleToggleModal = () => {
+  //   // setModalOpen((prevState) => !prevState);
+  //   setMessage("");
+  //   // setData([]); // Clear data when modal is closed
+  // };
   async function getQues() {
     try {
       const resp = await getChats(params.id);
       console.log({ resp });
-      if(resp) {
+      if (resp) {
         setData(resp?.data);
       }
 
@@ -53,14 +53,14 @@ export default function ChatModal({ params }) {
       console.error("Error submitting chat:", error);
       alert(
         error?.response?.data?.message ||
-          "An error occurred while submitting your question."
+        "An error occurred while submitting your question."
       );
     }
   };
 
   return (
     <>
-      <div className="fixed bottom-5 right-5 z-50">
+      {/* <div className="fixed bottom-16 right-5 z-50">
         {!modalOpen && (
           <div
             onClick={handleToggleModal}
@@ -69,62 +69,63 @@ export default function ChatModal({ params }) {
             <CiChat1 className="text-black w-8 h-8" />
           </div>
         )}
-      </div>
+      </div> */}
 
-      {modalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full md:w-[600px] p-6">
-            <div className="flex justify-between items-center border-b pb-3">
-              <h2 className="text-lg font-semibold text-gray-800">
-                Heading for Chat
-              </h2>
-              <div
+
+
+      <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg shadow-lg w-full md:w-[600px] p-6">
+          <div className="flex justify-between items-center border-b pb-3">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Heading for Chat
+            </h2>
+            {/* <div
                 onClick={handleToggleModal}
                 className="bg-slate-500 rounded-full p-2 flex items-center justify-center cursor-pointer"
               >
                 <IoMdClose size={16} className="text-white" />
-              </div>
-            </div>
+              </div> */}
+          </div>
 
-            <ul className="h-[300px] overflow-y-auto">
-              {data &&  data.length > 0  && data.map((item) => (
-                <div key={item.GUID} className="border px-4 py-2 my-4">
-                  <div className="flex justify-between items-center">
-                    <div>{item?.Question}</div>
-                    <div className=" text-sm text-gray-500">
-                      {item?.CreatedOn
-                        ? new Date(item.CreatedOn).toLocaleString()
-                        : ""}
-                    </div>
-                  </div>
-                  <div className="w-full border my-2"></div>
-                  <div>
-                    <div className="text-gray-500 text-sm py-2 px-2">
-                      {item?.Answer}
-                    </div>
+          <ul className="h-[300px] overflow-y-auto">
+            {data && data.length > 0 && data.map((item) => (
+              <div key={item.GUID} className="border px-4 py-2 my-4">
+                <div className="flex justify-between items-center">
+                  <div>{item?.Question}</div>
+                  <div className=" text-sm text-gray-500">
+                    {item?.CreatedOn
+                      ? new Date(item.CreatedOn).toLocaleString()
+                      : ""}
                   </div>
                 </div>
-              ))}
-            </ul>
+                <div className="w-full border my-2"></div>
+                <div>
+                  <div className="text-gray-500 text-sm py-2 px-2">
+                    {item?.Answer}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ul>
 
-            <div className="flex w-full bg-white py-4 rounded">
-              <input
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                type="text"
-                placeholder="Type your message..."
-                className="flex-1 border text-black border-gray-300 rounded-l px-4 py-2"
-              />
-              <button
-                className="bg-slate-500 text-white px-6 py-2 rounded-r"
-                onClick={onChatSubmitHandler}
-              >
-                Send
-              </button>
-            </div>
+          <div className="flex w-full bg-white py-4 rounded">
+            <input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              type="text"
+              placeholder="Type your message..."
+              className="flex-1 border text-black border-gray-300 rounded-l px-4 py-2"
+            />
+            <button
+              className="bg-slate-500 text-white px-6 py-2 rounded-r"
+              onClick={onChatSubmitHandler}
+            >
+              Send
+            </button>
           </div>
         </div>
-      )}
+      </div>
+
     </>
   );
 }
