@@ -107,7 +107,8 @@ async function getEventSchedules(eventId, headers, baseUrl) {
     'wdrgns_eventnumber',
     'wdrgns_session',
     'wdrgns_time',
-    'wdrgns_displayorder'
+    'wdrgns_displayorder',
+    'wdrgns_displaycolour'
   ].join(',');
 
   const filter = `_wdrgns_event_value eq '${eventId}' and wdrgns_showontickets eq true and statecode eq 0`;
@@ -125,7 +126,8 @@ async function getEventSchedules(eventId, headers, baseUrl) {
     eventNumber: schedule.wdrgns_eventnumber,
     session: schedule.wdrgns_session,
     time: schedule.wdrgns_time,
-    displayOrder: schedule.wdrgns_displayorder
+    displayOrder: schedule.wdrgns_displayorder,
+    displayColour: schedule.wdrgns_displaycolour ? `#${schedule.wdrgns_displaycolour}` : null,
   }));
 }
 
@@ -304,7 +306,8 @@ export async function GET(req, { params }) {
           tyreBranding: res.data?.wdrgns_openinghourstyrebranding || null
         },
         secondLine: res.data?.wdrgns_ticket2ndline || null,
-        thirdLine: res.data?.wdrgns_ticket3rdline || null
+        thirdLine: res.data?.wdrgns_ticket3rdline || null,
+
       };
     } catch (err) {
       console.error("Failed to fetch event description/opening hours:", err.message);
@@ -324,7 +327,7 @@ export async function GET(req, { params }) {
     }
   }
 
-  const { description, openingHours, secondLine, thirdLine } = await getEventDescriptionAndOpeningHours(
+  const { description, openingHours, secondLine, thirdLine, color } = await getEventDescriptionAndOpeningHours(
     selectedEvent.wdrgns_eventid,
     headers,
     baseUrl
