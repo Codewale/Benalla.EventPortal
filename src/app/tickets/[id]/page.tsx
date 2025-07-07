@@ -6,6 +6,7 @@ import Schedules from "../../../components/Schedules";
 import PromoterNsponsors from "../../../components/PromoterNSponsors";
 import TicketLinksnOpenings from "../../../components/TicketLinksnOpenings";
 import Maps from "../../../components/Maps";
+import AskAdam from "../../../components/AskAdam";
 async function getTicket(id: string) {
   const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
   return await axios.get(`${baseUrl}/api/tickets/${id}`);
@@ -25,7 +26,7 @@ export default async function TicketPage({ params }) {
 
   return (
     <>
-      <FirstInfo params={params} />
+      <Maps params={params} />
       <Footer />
     </>
 

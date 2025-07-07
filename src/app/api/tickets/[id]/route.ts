@@ -369,8 +369,8 @@ export async function GET(req, { params }) {
       image: eventImageBase64 || null,
       logo: eventLogoBase64 || null,
       map: eventMapBase64 || null,
-      secondLine: selectedEvent.wdrgns_ticket2ndline || null,
-      thirdLine: selectedEvent.wdrgns_ticket3rdline || null,
+      secondLine: secondLine || null,
+      thirdLine: thirdLine || null,
     },
     promoter: promoter
       ? {

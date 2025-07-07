@@ -146,30 +146,14 @@ export default async function TicketPage({ params }) {
                             )}
                             <div className="flex-1 text-center">
                                 <h1 className="text-base font-bold text-black">
-                                    {event?.name || ticket?.name}
+                                    {event?.name || null}
                                 </h1>
-                                <p className="text-base font-bold text-black">
-                                    {(() => {
-                                        // Try event.startDate first, then ticketType.validFrom
-                                        const dateStr = event?.startDate || ticketType?.validFrom;
-                                        if (!dateStr) return "-";
-                                        const date = new Date(dateStr);
-                                        if (event?.endDate) {
-                                            const endDate = new Date(event.endDate);
-                                            if (
-                                                date.getMonth() === endDate.getMonth() &&
-                                                date.getFullYear() === endDate.getFullYear()
-                                            ) {
-                                                return `${date.getDate()}-${endDate.getDate()} ${date.toLocaleString("en-GB", {
-                                                    month: "long",
-                                                })} ${date.getFullYear()}`;
-                                            }
-                                        }
-                                        return `${date.getDate()} ${date.toLocaleString("en-GB", {
-                                            month: "long",
-                                        })} ${date.getFullYear()}`;
-                                    })()}
-                                </p>
+                                <h1 className="text-base font-bold text-black">
+                                    {event?.secondLine || null}
+                                </h1>
+                                <h1 className="text-base font-bold text-black">
+                                    {event?.thirdLine || null}
+                                </h1>
                             </div>
                             {promoterLogo && (
                                 <img
