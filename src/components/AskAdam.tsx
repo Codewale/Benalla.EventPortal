@@ -1,16 +1,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-async function getChats(id: string) {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
-    return await axios.get(`${baseUrl}/api/ask-adam/${id}`);
-}
-
-async function postChatById(id: string, data: any) {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
-    return await axios.post(`${baseUrl}/api/ask-adam/${id}`, data);
-}
+import AlertMessages from "@/UI/Alert";
 
 async function getTicket(id: string) {
     const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
@@ -22,18 +13,17 @@ async function getDisplayOrder(id: string) {
     return await axios.get(`${baseUrl}/api/display/${id}`);
 }
 
-function formatTimeFromISOString(isoString, options = {}) {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: true,
-        ...options,
-    });
+async function getChats(id: string) {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL;
+    return await axios.get(`${baseUrl}/api/ask-adam/${id}`);
+}
+
+async function postChatById(id: string, data: any) {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
+    return await axios.post(`${baseUrl}/api/ask-adam/${id}`, data);
 }
 
 export default function AskAdam({ params }) {
-    // All hooks must be called at the top level
     const [ticketDetails, setTicketDetails] = useState(null);
     const [displayOrderDetails, setDisplayOrderDetails] = useState(null);
     const [alertMessageList, setAlertMessageList] = useState([]);
@@ -94,13 +84,13 @@ export default function AskAdam({ params }) {
     };
 
     if (loading) {
-        // return <div className="text-center mt-10 text-gray-500">Loading...</div>;
+        return <div className="text-white text-center mt-10">Loading...</div>;
     }
+
     if (error) {
         return <div className="text-center mt-10 text-red-500">{error}</div>;
     }
 
-    // Now you can safely use ticketDetails, displayOrderDetails, etc.
     const event = ticketDetails?.ticket?.event || {};
     const eventImage = event?.image ? `${event.image}` : "";
     const eventLogo = event?.logo ? `${event.logo}` : "";
@@ -110,46 +100,11 @@ export default function AskAdam({ params }) {
 
     return (
         <>
-            {/* <div className="fixed bottom-16 right-5 z-50">
-    {!modalOpen && (
-      <div
-        onClick={handleToggleModal}
-        className="bg-white rounded-full shadow-2xl p-4 w-16 h-16 flex items-center justify-center cursor-pointer"
-      >
-        <CiChat1 className="text-black w-8 h-8" />
-      </div>
-    )}
-  </div> */}
-
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
+                {/* ✅ Alert Messages Section */}
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
-                    <div className="flex flex-col left-0 w-full z-50 gap-1">
-                        {alertMessageList.map((item) => (
-                            <div
-                                key={item.id}
-                                className="flex items-center gap-4 px-4 py-1"
-                                style={{
-                                    backgroundColor: item.alertColour || '#fef3c7', // fallback to light yellow
-                                }}
-                            >
-                                {item.alertImageBase64 ? (
-                                    <img
-                                        src={`${item.alertImageBase64}`}
-                                        alt="Alert"
-                                        className="w-6 h-6 rounded-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-white text-sm font-bold">
-                                        !
-                                    </div>
-                                )}
-
-                                <p className="text-[0.6rem] font-bold text-white italic">{item.alertText || 'No alert message provided.'}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <AlertMessages alertMessageList={alertMessageList || []} />
                 )}
-
 
                 <div
                     className="flex justify-between items-start flex-1 w-full min-h-0 pb-10"
@@ -163,9 +118,7 @@ export default function AskAdam({ params }) {
                         backgroundRepeat: "no-repeat",
                     }}
                 >
-                    <div
-                        className="shadow-2xl w-full md:p-12 lg:p-14 h-full flex flex-col min-h-[calc(100vh-170px)]"
-                    >
+                    <div className="shadow-2xl w-full md:p-12 lg:p-14 h-full flex flex-col min-h-[calc(100vh-170px)]">
                         <div className="flex items-center mb-16 justify-around">
                             {eventImage && (
                                 <img
@@ -189,7 +142,7 @@ export default function AskAdam({ params }) {
                                 <img
                                     src={promoterLogo}
                                     alt="Promoter Logo"
-                                    className="w-16 h-16 "
+                                    className="w-16 h-16"
                                 />
                             )}
                         </div>
@@ -200,12 +153,6 @@ export default function AskAdam({ params }) {
                                     <h2 className="text-lg font-semibold text-gray-800">
                                         Ask Adam
                                     </h2>
-                                    {/* <div
-                                        onClick={handleToggleModal}
-                                        className="bg-slate-500 rounded-full p-2 flex items-center justify-center cursor-pointer"
-                                    >
-                                        <IoMdClose size={16} className="text-white" />
-                                    </div> */}
                                 </div>
 
                                 <ul className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
@@ -249,10 +196,7 @@ export default function AskAdam({ params }) {
 
                     </div>
                 </div>
-                {/* <ChatModal params={params} /> */}
             </div>
-
-
         </>
     );
 }
