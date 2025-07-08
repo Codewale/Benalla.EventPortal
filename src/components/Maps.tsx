@@ -73,7 +73,7 @@ export default function Maps({ params }) {
                 )}
 
                 <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0 pb-10"
+                    className="flex justify-between items-start flex-1 w-full min-h-0 pb-10 mb-[4rem]"
                     style={{
                         maxWidth: 690,
                         position: "relative",
