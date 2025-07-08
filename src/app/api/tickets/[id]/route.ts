@@ -156,8 +156,25 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
             { headers, responseType: 'arraybuffer' }
           );
 
-          const contentType = imageResponse.headers['content-type'] || 'image/png';
-          const base64Image = Buffer.from(imageResponse.data, 'binary').toString('base64');
+          // Detect content type correctly
+          let contentType = imageResponse.headers['content-type'] || 'application/octet-stream';
+
+          // If still unknown, attempt manual detection (rare)
+          const buffer = Buffer.from(imageResponse.data);
+          if (contentType === 'application/octet-stream') {
+            const header = buffer.toString('utf8', 0, 50);
+            if (header.includes('<svg') || header.includes('<?xml')) {
+              contentType = 'image/svg+xml';
+            } else if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4E && buffer[3] === 0x47) {
+              contentType = 'image/png';
+            } else if (
+              buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF
+            ) {
+              contentType = 'image/jpeg';
+            }
+          }
+
+          const base64Image = buffer.toString('base64');
           linkImageBase64 = `data:${contentType};base64,${base64Image}`;
         } catch (error) {
           console.error(`Failed to fetch image for ticket link ${link.wdrgns_ticketlinksid}`, error.message);
