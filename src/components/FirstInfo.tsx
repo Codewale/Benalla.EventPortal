@@ -55,7 +55,7 @@ export default function FirstInfo({ params }) {
   return (
     <>
 
-      <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0 mb-[4rem]">
+      <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0">
         {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
           <AlertMessages alertMessageList={alertMessageList || []} />
         )}

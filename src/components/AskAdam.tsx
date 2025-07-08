@@ -110,7 +110,7 @@ export default function AskAdam({ params }) {
 
     return (
         <>
-            <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0 mb-[4rem]">
+            <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0">
                 {/* Alert Messages Section */}
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
                     <AlertMessages alertMessageList={alertMessageList || []} />
