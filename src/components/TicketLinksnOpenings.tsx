@@ -138,9 +138,9 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Image and link row */}
                                                     <tr className="border-b border-gray-200">
                                                         <td className="py-1 pr-2 align-top w-12">
-                                                            {item.ticketLinkImage ? (
+                                                            {item.linkImageBase64 ? (
                                                                 <img
-                                                                    src={item.ticketLinkImage}
+                                                                    src={item.linkImageBase64}
                                                                     alt={item.name}
                                                                     className="w-8 h-8 object-contain rounded"
                                                                 />
@@ -187,9 +187,9 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Image and link row */}
                                                     <tr className="border-b border-gray-200">
                                                         <td className="py-1 pr-2 align-top w-12">
-                                                            {item.ticketLinkImage ? (
+                                                            {item.linkImageBase64 ? (
                                                                 <img
-                                                                    src={item.ticketLinkImage}
+                                                                    src={item.linkImageBase64}
                                                                     alt={item.name}
                                                                     className="w-8 h-8 object-contain rounded"
                                                                 />
@@ -236,9 +236,9 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Image and link row */}
                                                     <tr className="border-b border-gray-200">
                                                         <td className="py-1 pr-2 align-top w-12">
-                                                            {item.ticketLinkImage ? (
+                                                            {item.linkImageBase64 ? (
                                                                 <img
-                                                                    src={item.ticketLinkImage}
+                                                                    src={item.linkImageBase64}
                                                                     alt={item.name}
                                                                     className="w-8 h-8 object-contain rounded"
                                                                 />
