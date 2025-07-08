@@ -77,7 +77,7 @@ export default function PromoterNsopnsors({ params }) {
                 )}
 
                 <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0"
+                    className="flex justify-between items-start flex-1 w-full min-h-0 mb-[4rem]"
                     style={{
                         maxWidth: 690,
                         position: "relative",
@@ -117,7 +117,7 @@ export default function PromoterNsopnsors({ params }) {
                             )}
                         </div>
 
-                        <div className="flex flex-col gap-6 w-full max-w-lg mx-auto mt-8">
+                        <div className="flex flex-col gap-6 w-full mt-8">
                             {/* Event Promoters */}
                             <div className="bg-white rounded-2xl shadow-md p-4">
                                 <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>

@@ -80,7 +80,7 @@ export default function TicketLinksnOpenings({ params }) {
                 )}
 
                 <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0"
+                    className="flex justify-between items-start flex-1 w-full min-h-0 mb-[4rem]"
                     style={{
                         maxWidth: 690,
                         position: "relative",
@@ -122,7 +122,7 @@ export default function TicketLinksnOpenings({ params }) {
                         </div>
                         <div className="flex flex-col items-center justify-start w-full gap-2">
                             {getLinksByType("Information").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 ">
+                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Information").map((item) => (
@@ -171,7 +171,7 @@ export default function TicketLinksnOpenings({ params }) {
 
                             {/* Section for "Document" ticket links */}
                             {getLinksByType("Document").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 ">
+                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Document").map((item) => (
@@ -219,11 +219,11 @@ export default function TicketLinksnOpenings({ params }) {
                             )}
 
                             {/* Section for "Advertisement" ticket links */}
-                            {getLinksByType("Advertisement").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-3 mb-4 ">
+                            {getLinksByType("Advertising").length > 0 && (
+                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
                                     <table className="w-full">
                                         <tbody>
-                                            {getLinksByType("Advertisement").map((item) => (
+                                            {getLinksByType("Advertising").map((item) => (
                                                 <React.Fragment key={item.displayOrder}>
                                                     {/* Heading row */}
                                                     <tr>
@@ -266,9 +266,8 @@ export default function TicketLinksnOpenings({ params }) {
                                     </table>
                                 </div>
                             )}
-
                             {/* Opening Hours Card */}
-                            <div className="bg-white rounded-xl shadow-lg w-full md:w-1/2 p-6">
+                            <div className="bg-white rounded-xl shadow-lg w-full p-6">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
@@ -296,7 +295,7 @@ export default function TicketLinksnOpenings({ params }) {
                                     </div>
                                     <div>
                                         <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
-                                            {event?.openingHours?.tyreBranding || "-"} Shop Hours
+                                            Fuel Shop Hours
                                         </div>
                                         <div className={`text-gray-900 text-[0.7rem] font-bold ${spaceGrotesk.className}`}>
                                             {event?.openingHours?.fuelShop || "-"}

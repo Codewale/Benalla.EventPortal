@@ -84,7 +84,7 @@ export default function Schedules({ params }) {
                 )}
 
                 <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0"
+                    className="flex justify-between items-start flex-1 w-full min-h-0 mb-[4rem]"
                     style={{
                         maxWidth: 690,
                         position: "relative",

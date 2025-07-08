@@ -110,8 +110,8 @@ export default function AskAdam({ params }) {
 
     return (
         <>
-            <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
-                {/* ✅ Alert Messages Section */}
+            <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0 mb-[4rem]">
+                {/* Alert Messages Section */}
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
                     <AlertMessages alertMessageList={alertMessageList || []} />
                 )}
@@ -129,7 +129,7 @@ export default function AskAdam({ params }) {
                     }}
                 >
                     <div className="shadow-2xl w-full md:p-12 lg:p-14 h-full flex flex-col min-h-[calc(100vh-170px)]">
-                        <div className="flex items-center mb-16 justify-around">
+                        <div className="flex items-center justify-around">
                             {eventImage && (
                                 <img
                                     src={eventLogo}
@@ -157,8 +157,8 @@ export default function AskAdam({ params }) {
                             )}
                         </div>
 
-                        <div className="flex flex-col flex-1 min-h-0 w-full items-center justify-center h-full">
-                            <div className="bg-white rounded-lg shadow-lg w-full md:w-[600px] flex flex-col flex-1 min-h-0 max-h-full p-0 h-full">
+                        <div className="flex flex-col flex-1 min-h-0 w-full items-center justify-center h-full p-4">
+                            <div className="bg-white shadow-lg w-full md:w-[600px] flex flex-col flex-1 min-h-0 max-h-full p-6 h-full">
                                 <div className="flex justify-between items-center border-b px-6 py-4">
                                     <h2 className="text-lg font-semibold text-gray-800">
                                         Ask Adam
@@ -186,7 +186,7 @@ export default function AskAdam({ params }) {
                                     ))}
                                 </ul>
 
-                                <div className="flex w-full bg-white py-4 px-6 rounded-b">
+                                <div className="flex justify-center w-full bg-white py-4 px-6 rounded-b">
                                     <input
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
