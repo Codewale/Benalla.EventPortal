@@ -76,7 +76,7 @@ export default function Schedules({ params }) {
     console.log(eventSchedules);
     return (
         <>
-            <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
+            <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0">
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
                     <AlertMessages alertMessageList={alertMessageList || []} />
 
@@ -86,6 +86,10 @@ export default function Schedules({ params }) {
                 <div
                     className="flex justify-between items-start flex-1 w-full min-h-0"
                     style={{
+                        maxWidth: 690,
+                        position: "relative",
+                        left: "50%",
+                        transform: "translate(-50%, 0)",
                         minHeight: 0,
                         backgroundImage: eventImage
                             ? `linear-gradient(to top, rgba(0,0,0,1) 70%, rgba(0,0,0,0.2) 80%), url('${eventImage}')`
@@ -101,13 +105,13 @@ export default function Schedules({ params }) {
                                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
                             )}
                             <div className="flex-1 text-center">
-                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
+                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
                                     {event?.name || null}
                                 </h1>
-                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
+                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
                                     {event?.secondLine || null}
                                 </h1>
-                                <h1 className={`text-sm font-bold text-black ${archivoBlack.className}`}>
+                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
                                     {event?.thirdLine || null}
                                 </h1>
                             </div>
