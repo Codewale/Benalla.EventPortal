@@ -14,12 +14,12 @@ const archivoBlack = Archivo_Black({
     weight: ["400"],
 });
 async function getTicket(id: string) {
-    const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
     return await axios.get(`${baseUrl}/api/tickets/${id}`);
 }
 
 async function getDisplayOrder(id: string) {
-    const baseUrl = process.env.APP_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
     return await axios.get(`${baseUrl}/api/display/${id}`);
 }
 
