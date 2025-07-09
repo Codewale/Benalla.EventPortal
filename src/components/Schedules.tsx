@@ -76,7 +76,7 @@ export default function Schedules({ params }) {
     console.log(eventSchedules);
     return (
         <>
-            <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0">
+            <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
                     <AlertMessages alertMessageList={alertMessageList || []} />
 
