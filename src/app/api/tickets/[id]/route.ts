@@ -191,7 +191,6 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
       };
     })
   );
-  console.log('ticketLinks', ticketLinks);
 
   return ticketLinks;
 }
@@ -293,7 +292,13 @@ export async function GET(req, { params }) {
       : null,
     getEventSchedules(selectedEvent.wdrgns_eventid, headers, baseUrl)
   ]);
-
+  const suburbCoordinates = location
+    ? await getSuburbCoordinates(
+      location._wdrgns_suburbid_value,
+      headers,
+      baseUrl
+    )
+    : null;
   async function getEventDescriptionAndOpeningHours(eventId, headers, baseUrl) {
     try {
       const selectFields = [
@@ -350,6 +355,25 @@ export async function GET(req, { params }) {
     baseUrl
   );
 
+  async function getSuburbCoordinates(suburbId, headers, baseUrl) {
+    if (!suburbId) return null;
+
+    try {
+      const select = 'wdrgns_latitude,wdrgns_longitude';
+      const url = `${baseUrl}/wdrgns_suburbs(${suburbId})?$select=${select}`;
+
+      const res = await axios.get(url, { headers });
+
+      return {
+        latitude: res.data.wdrgns_latitude || null,
+        longitude: res.data.wdrgns_longitude || null,
+      };
+    } catch (err) {
+      console.error(`Failed to fetch suburb coordinates for ID ${suburbId}:`, err.message);
+      return null;
+    }
+  }
+
   const qr = await getQRCodeBase64(ticketId, headers);
 
   const result = {
@@ -405,7 +429,8 @@ export async function GET(req, { params }) {
         name: location.wdrgns_location,
         addressLine1: location.wdrgns_addressline1,
         addressLine2: location.wdrgns_addressline2,
-        suburbId: location._wdrgns_suburbid_value
+        suburbId: location._wdrgns_suburbid_value,
+        suburbCoordinates
       }
       : null,
     eventAlerts: alerts,
@@ -414,6 +439,8 @@ export async function GET(req, { params }) {
     primarySponsors,
     sponsors
   };
+
+  // console.log("Result", result);
 
 
   return NextResponse.json(result, {

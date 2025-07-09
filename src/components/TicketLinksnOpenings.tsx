@@ -69,7 +69,6 @@ export default function TicketLinksnOpenings({ params }) {
     const getLinksByType = (type) =>
         ticketLinks.filter((link) => link.typeLabel === type);
 
-    console.log(ticketLinks);
     return (
         <>
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
