@@ -51,11 +51,10 @@ export default function FirstInfo({ params }) {
   const locationMap = event?.map ? `${event.map}` : "";
   const qr = qrCode ? `${qrCode}` : "";
 
-  console.log(alertMessageList);
   return (
     <>
 
-      <div className="flex flex-col items-start justify-start min-h-screen bg-[#212121] relative top-0">
+      <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
         {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
           <AlertMessages alertMessageList={alertMessageList || []} />
         )}
@@ -150,7 +149,7 @@ export default function FirstInfo({ params }) {
                   LOCATION
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {location?.name || "-"}
+                  <a className={`text-white font-bold text-sm no-underline ${spaceGrotesk.className}`} href={`https://www.bing.com/maps?cp=${location.suburbCoordinates.latitude}%7E${location.suburbCoordinates.longitude}&lvl=15`} target="_blank">{location?.name || "-"}</a>
                 </div>
               </div>
               <div>
@@ -159,6 +158,14 @@ export default function FirstInfo({ params }) {
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
                   {event?.description || "-"}
+                </div>
+              </div>
+              <div>
+                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                  ADDRESS LINE
+                </div>
+                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
+                  {location?.addressLine1 || location?.addressLine2 || "-"}
                 </div>
               </div>
             </div>
