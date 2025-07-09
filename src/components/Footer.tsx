@@ -18,7 +18,7 @@ export default function Footer({
 }) {
     return (
         <>
-            <div className="fixed bottom-0 left-0 w-full flex justify-between items-center px-8 py-4 z-50 bg-black">
+            <div className="fixed bottom-0 left-0 w-full flex justify-between items-center rounded-[4px] px-8 py-4 z-50 bg-black">
                 <button
                     onClick={handleDecrement}
                     className="flex items-center justify-center bg-[#da2127] text-white w-14 h-8 shadow-md hover:bg-[#b81b22] transition"
