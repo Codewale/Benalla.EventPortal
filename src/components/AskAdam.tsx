@@ -168,9 +168,9 @@ export default function AskAdam({ params }) {
                                 <ul className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
                                     {data && data.length > 0 && data.map((item) => (
                                         <div key={item.GUID} className="border px-4 py-2 my-4">
-                                            <div className="flex justify-between items-center">
+                                            <div className="flex justify-between items-center text-black">
                                                 <div>{item?.Question}</div>
-                                                <div className=" text-sm text-gray-500">
+                                                <div className=" text-sm text-black">
                                                     {item?.CreatedOn
                                                         ? new Date(item.CreatedOn).toLocaleString()
                                                         : ""}
@@ -178,7 +178,7 @@ export default function AskAdam({ params }) {
                                             </div>
                                             <div className="w-full border my-2"></div>
                                             <div>
-                                                <div className="text-gray-500 text-sm py-2 px-2">
+                                                <div className="text-black text-sm py-2 px-2">
                                                     {item?.Answer}
                                                 </div>
                                             </div>
