@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-
+import { useTicketAndDisplayData } from "../hooks/useFetch";
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
@@ -34,56 +34,92 @@ async function postChatById(id: string, data: any) {
 }
 
 export default function AskAdam({ params }) {
-    const [ticketDetails, setTicketDetails] = useState(null);
-    const [displayOrderDetails, setDisplayOrderDetails] = useState(null);
-    const [alertMessageList, setAlertMessageList] = useState([]);
-    const [ticketLinks, setTicketLinks] = useState([]);
-    const [data, setData] = useState([]);
+    // const [ticketDetails, setTicketDetails] = useState(null);
+    // const [displayOrderDetails, setDisplayOrderDetails] = useState(null);
+    // const [alertMessageList, setAlertMessageList] = useState([]);
+    // const [ticketLinks, setTicketLinks] = useState([]);
+    // const [data, setData] = useState([]);
     const [message, setMessage] = useState("");
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    // const [loading, setLoading] = useState(true);
+    // const [error, setError] = useState("");
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const ticketRes = await getTicket(params.id);
-                const displayRes = await getDisplayOrder(params.id);
-                setTicketDetails(ticketRes.data);
-                setDisplayOrderDetails(displayRes.data);
-                setAlertMessageList(ticketRes.data?.eventAlerts || []);
-                setTicketLinks(displayRes.data?.ticketLinks || []);
-                setError("");
-            } catch (err) {
-                setError("Error loading ticket.");
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchData();
-    }, [params.id]);
+    const {
+        chatsData,
+        displayError,
+        displayOrderDetails,
+        getChatError,
+        isChatLoading,
+        isDisplayLoading,
+        isPostChatsPending,
+        isTicketLoading,
+        postChatError,
+        postChatsData,
+        ticketDetails,
+        ticketError,
+    } = useTicketAndDisplayData(params.id);
 
-    async function getQues() {
-        try {
-            const resp = await getChats(params.id);
-            if (resp) {
-                setData(resp?.data);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
+    const chatMessages = chatsData || [];
+    const alertMessageList = ticketDetails?.eventAlerts || [];
 
-    useEffect(() => {
-        getQues();
-    }, [params.id]);
+    // useEffect(() => {
+    //     async function fetchData() {
+    //         try {
+    //             const ticketRes = await getTicket(params.id);
+    //             const displayRes = await getDisplayOrder(params.id);
+    //             setTicketDetails(ticketRes.data);
+    //             setDisplayOrderDetails(displayRes.data);
+    //             setAlertMessageList(ticketRes.data?.eventAlerts || []);
+    //             setTicketLinks(displayRes.data?.ticketLinks || []);
+    //             setError("");
+    //         } catch (err) {
+    //             setError("Error loading ticket.");
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     }
+    //     fetchData();
+    // }, [params.id]);
+
+    // async function getQues() {
+    //     try {
+    //         const resp = await getChats(params.id);
+    //         if (resp) {
+    //             setData(resp?.data);
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     getQues();
+    // }, [params.id]);
+
+    // const onChatSubmitHandler = async () => {
+    //     try {
+    //         await postChatById(params.id, {
+    //             questionText: message,
+    //         });
+    //         setMessage("");
+    //         await getQues();
+    //     } catch (error) {
+    //         console.error("Error submitting chat:", error);
+    //         alert(
+    //             error?.response?.data?.message ||
+    //             "An error occurred while submitting your question."
+    //         );
+    //     }
+    // };
 
     const onChatSubmitHandler = async () => {
         try {
-            await postChatById(params.id, {
-                questionText: message,
+            await postChatsData({
+                id: params.id,
+                data: {
+                    questionText: message,
+                },
             });
             setMessage("");
-            await getQues();
         } catch (error) {
             console.error("Error submitting chat:", error);
             alert(
@@ -93,12 +129,19 @@ export default function AskAdam({ params }) {
         }
     };
 
-    if (loading) {
+    if (isChatLoading || isTicketLoading || isPostChatsPending) {
         return <div className="text-white text-center mt-10">Loading...</div>;
     }
 
-    if (error) {
-        return <div className="text-center mt-10 text-red-500">{error}</div>;
+    if (ticketError || postChatError || getChatError) {
+        return (
+            <div className="text-center mt-10 text-red-500">
+                {ticketError?.message ||
+                    postChatError?.message ||
+                    getChatError?.message ||
+                    "An error occurred."}
+            </div>
+        );
     }
 
     const event = ticketDetails?.ticket?.event || {};
@@ -107,6 +150,7 @@ export default function AskAdam({ params }) {
     const promoterLogo = ticketDetails?.ticket?.promoter?.logo
         ? `${ticketDetails.ticket.promoter.logo}`
         : "";
+
 
     return (
         <>
@@ -158,7 +202,7 @@ export default function AskAdam({ params }) {
                         </div>
 
                         <div className="flex flex-col flex-1 min-h-0 w-full items-center justify-center h-full p-4">
-                            <div className="bg-white shadow-lg w-full md:w-[600px] flex flex-col flex-1 min-h-0 max-h-full p-6 h-full">
+                            <div className="bg-white shadow-lg w-full md:w-[600px] flex flex-col flex-1 min-h-0 max-h-full h-full">
                                 <div className="flex justify-between items-center border-b px-6 py-4">
                                     <h2 className={`text-lg font-semibold text-gray-800 ${archivoBlack.className}`}>
                                         Ask Adam
@@ -166,24 +210,30 @@ export default function AskAdam({ params }) {
                                 </div>
 
                                 <ul className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
-                                    {data && data.length > 0 && data.map((item) => (
-                                        <div key={item.GUID} className="border px-4 py-2 my-4">
-                                            <div className={`flex justify-between items-center text-black ${archivoBlack.className}`}>
-                                                <div>{item?.Question}</div>
-                                                <div className={`text-sm text-black ${archivoBlack.className}`}>
-                                                    {item?.CreatedOn
-                                                        ? new Date(item.CreatedOn).toLocaleString()
-                                                        : ""}
+                                    {chatMessages.lenght === 0 ? (
+                                        <p className="text-center text-blue-700">
+                                            No chats yet. Start the conversion!
+                                        </p>
+                                    ) : (
+                                        chatMessages.map((item) => (
+                                            <div key={item.GUID} className="border px-4 py-2 my-4">
+                                                <div className={`flex justify-between items-center text-black ${archivoBlack.className}`}>
+                                                    <div>{item?.Question}</div>
+                                                    <div className={`text-sm text-black ${archivoBlack.className}`}>
+                                                        {item?.CreatedOn
+                                                            ? new Date(item.CreatedOn).toLocaleString()
+                                                            : ""}
+                                                    </div>
+                                                </div>
+                                                <div className="w-full border my-2"></div>
+                                                <div>
+                                                    <div className={`text-black text-sm py-2 px-2 ${spaceGrotesk.className}`}>
+                                                        {item?.Answer}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="w-full border my-2"></div>
-                                            <div>
-                                                <div className={`text-black text-sm py-2 px-2 ${spaceGrotesk.className}`}>
-                                                    {item?.Answer}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        ))
+                                    )}
                                 </ul>
 
                                 <div className="flex justify-center w-full bg-white py-4 px-6 rounded-b">
