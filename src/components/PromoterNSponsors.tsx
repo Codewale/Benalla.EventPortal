@@ -85,11 +85,11 @@ export default function PromoterNsopnsors({ params }) {
                         transform: "translate(-50%, 0)",
                         minHeight: 0,
                         backgroundImage: eventImage
-                            ? `linear-gradient(to top, rgba(0,0,0,1) 70%, rgba(0,0,0,0.2) 80%), url('${eventImage}')`
+                            ? `linear-gradient(180deg, RGBA(0,0,0,0.1) 10%, RGBA(0,0,0,1) 20%),url('${eventImage}')`
                             : undefined,
-                        backgroundSize: "contain",
-                        backgroundPosition: "top center",
-                        backgroundRepeat: "no-repeat",
+                        backgroundSize: eventImage ? '100% 100vh, contain' : undefined, // gradient height 150px
+                        backgroundRepeat: 'no-repeat, no-repeat',
+                        backgroundPosition: 'top center, top center',
                     }}
                 >
                     <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">

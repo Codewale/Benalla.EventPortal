@@ -160,7 +160,7 @@ export default function AskAdam({ params }) {
                         <div className="flex flex-col flex-1 min-h-0 w-full items-center justify-center h-full p-4">
                             <div className="bg-white shadow-lg w-full md:w-[600px] flex flex-col flex-1 min-h-0 max-h-full p-6 h-full">
                                 <div className="flex justify-between items-center border-b px-6 py-4">
-                                    <h2 className="text-lg font-semibold text-gray-800">
+                                    <h2 className={`text-lg font-semibold text-gray-800 ${archivoBlack.className}`}>
                                         Ask Adam
                                     </h2>
                                 </div>
@@ -168,9 +168,9 @@ export default function AskAdam({ params }) {
                                 <ul className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
                                     {data && data.length > 0 && data.map((item) => (
                                         <div key={item.GUID} className="border px-4 py-2 my-4">
-                                            <div className="flex justify-between items-center text-black">
+                                            <div className={`flex justify-between items-center text-black ${archivoBlack.className}`}>
                                                 <div>{item?.Question}</div>
-                                                <div className=" text-sm text-black">
+                                                <div className={`text-sm text-black ${archivoBlack.className}`}>
                                                     {item?.CreatedOn
                                                         ? new Date(item.CreatedOn).toLocaleString()
                                                         : ""}
@@ -178,7 +178,7 @@ export default function AskAdam({ params }) {
                                             </div>
                                             <div className="w-full border my-2"></div>
                                             <div>
-                                                <div className="text-black text-sm py-2 px-2">
+                                                <div className={`text-black text-sm py-2 px-2 ${spaceGrotesk.className}`}>
                                                     {item?.Answer}
                                                 </div>
                                             </div>
@@ -192,10 +192,10 @@ export default function AskAdam({ params }) {
                                         onChange={(e) => setMessage(e.target.value)}
                                         type="text"
                                         placeholder="Type your message..."
-                                        className="flex-1 border text-black border-gray-300 rounded-l px-4 py-2"
+                                        className={`flex-1 border text-black border-gray-300 rounded-l px-4 py-2 ${spaceGrotesk.className}`}
                                     />
                                     <button
-                                        className="bg-slate-500 text-white px-6 py-2 rounded-r"
+                                        className={`bg-slate-500 text-white px-6 py-2 rounded-r ${spaceGrotesk.className}`}
                                         onClick={onChatSubmitHandler}
                                     >
                                         Send
