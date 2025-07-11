@@ -44,7 +44,7 @@ export default async function TicketPage({ params }) {
 
   } catch (error) {
     console.log(error);
-    
+
     return (
       <div className="text-center mt-10 text-red-500">
         Error loading event.
@@ -67,19 +67,19 @@ export default async function TicketPage({ params }) {
   const eventSchedules = eventWithText.data.eventSchedules;
 
 
-  console.log(event);
+  console.log("Event :", event);
 
   const eventImage = event?.image ? `${event.image}` : "";
   const eventLogo = event?.logo ? `${event.logo}` : "";
   const promoterLogo = promoter?.logo
     ? `${promoter.logo}`
     : "";
-  const locationMap = event?.map ? `${event.map}` : "";  
+  const locationMap = event?.map ? `${event.map}` : "";
 
   return (
     <>
       <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4 py-12">
-        
+
         <div className="bg-white shadow-2xl rounded-2xl max-w-[800px] w-full p-10 md:p-12 lg:p-14 m-4">
           <div className="flex items-center mb-6">
             {eventImage && (
@@ -119,39 +119,39 @@ export default async function TicketPage({ params }) {
             </div>
             <div>
               <div className="font-semibold text-gray-700">Event Image</div>
-                <div className="flex items-center mt-1">
+              <div className="flex items-center mt-1">
 
-                  {eventImage ? 
-                    <img
-                      src={eventImage}
-                      alt="Event Image"
-                      className="w-8 h-8 rounded-full mr-2"
-                    />
-                : 
-                    <p className="text-gray-900">Image of the Event</p>
-                }               
-                </div>
+                {eventImage ?
+                  <img
+                    src={eventImage}
+                    alt="Event Image"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                  :
+                  <p className="text-gray-900">Image of the Event</p>
+                }
+              </div>
             </div>
             <div>
               <div className="font-semibold text-gray-700">Event Logo</div>
               <div className="flex items-center mt-1">
 
-                {eventLogo ? 
-                <img
-                  src={eventLogo}
-                  alt="Event Logo"
-                  className="w-8 h-8 rounded-full mr-2"
-                />
-                : 
-                <p className="text-gray-900">Logo of the Event</p>
-              
-              }
+                {eventLogo ?
+                  <img
+                    src={eventLogo}
+                    alt="Event Logo"
+                    className="w-8 h-8 rounded-full mr-2"
+                  />
+                  :
+                  <p className="text-gray-900">Logo of the Event</p>
+
+                }
               </div>
             </div>
             <div>
               <div className="font-semibold text-gray-700">Description</div>
               <div className="text-gray-900">
-                {event?.descriptionBlurb || "This is Description"}
+                {event?.description?.replace(/<\/?[^>]+(>|$)/g, '') || "-"}
               </div>
             </div>
             <div>
@@ -163,26 +163,26 @@ export default async function TicketPage({ params }) {
             <div>
               <div className="font-semibold text-gray-700">Location Address</div>
               <div className="text-gray-900">
-                
-                {(location?.addressLine1 || "-") || (location?.addressLine2 || "-") }
+
+                {(location?.addressLine1 || "-") || (location?.addressLine2 || "-")}
 
               </div>
             </div>
 
             <div>
-              <div className="font-semibold text-gray-700">Location Map</div> 
+              <div className="font-semibold text-gray-700">Location Map</div>
               <div className="text-gray-900">
                 {
-                  locationMap ? 
-                  <img
-                    src={locationMap}
-                    alt="Map of Location"
-                    className="w-16 h-16 object-cover rounded-lg mb-6"
-                  />
-                  :
-                  <p className="text-gray-900">Map of the location </p>
-                }                
-              </div> 
+                  locationMap ?
+                    <img
+                      src={locationMap}
+                      alt="Map of Location"
+                      className="w-16 h-16 object-cover rounded-lg mb-6"
+                    />
+                    :
+                    <p className="text-gray-900">Map of the location </p>
+                }
+              </div>
             </div>
 
 
@@ -232,11 +232,11 @@ export default async function TicketPage({ params }) {
             <div>
               <div className="font-semibold text-gray-700">Promoter Logo</div>
               <div className="flex items-center mt-1">
-              <img
-                src={promoterLogo}
-                alt="Promoter Logo"
-                className="w-8 h-8 rounded-full mr-2"
-              />
+                <img
+                  src={promoterLogo}
+                  alt="Promoter Logo"
+                  className="w-8 h-8 rounded-full mr-2"
+                />
               </div>
             </div>
 
@@ -245,7 +245,7 @@ export default async function TicketPage({ params }) {
               <div className="text-gray-900">
                 {event?.onSaleFrom?.slice(0, 10) || "-"}
               </div>
-            </div>          
+            </div>
 
             <div>
               <div className="font-semibold text-gray-700">On Sale To</div>
@@ -254,11 +254,11 @@ export default async function TicketPage({ params }) {
               </div>
             </div>
 
-          </div>  
+          </div>
 
           <div className="overflow-x-auto">
 
-                <table className="min-w-full mt-5 divide-y divide-gray-200">
+            <table className="min-w-full mt-5 divide-y divide-gray-200">
               <caption className="text-gray-900 font-medium">Table of event Schedule</caption>
               <thead className="bg-gray-100">
                 <tr>
@@ -269,13 +269,13 @@ export default async function TicketPage({ params }) {
                     Item
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Start 
+                    Start
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    End 
+                    End
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Session 
+                    Session
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Time
@@ -285,18 +285,18 @@ export default async function TicketPage({ params }) {
               <tbody className="bg-white divide-y divide-gray-200">
                 {eventSchedules?.map((item) => (
                   <tr key={item.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber ? `${item.eventNumber}` : "-" }</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.eventNumber ? `${item.eventNumber}` : "-"}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.item}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session ? `${item.session}` : "-" }</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time ? `${item.time}` : "-" }</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.session ? `${item.session}` : "-"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.time ? `${item.time}` : "-"}</td>
                   </tr>
                 ))}
               </tbody>
-            </table>  
+            </table>
 
-                <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+            <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
               <caption className="text-gray-900 font-medium">Table of Sponsors</caption>
               <thead className="bg-gray-100">
                 <tr>
@@ -304,7 +304,7 @@ export default async function TicketPage({ params }) {
                     Name
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Image 
+                    Image
                   </th>
                 </tr>
               </thead>
@@ -312,64 +312,64 @@ export default async function TicketPage({ params }) {
                 {sponsors.map((item) => (
                   <tr key={item.name}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
-                    {item.image ? 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {/* {item.linkImage} */}
-                      
+                    {item.image ?
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {/* {item.linkImage} */}
+
                         <img
                           src={item.image}
                           alt="Map of Location"
                           className="w-8 h-8 object-cover rounded-lg"
                         />
                       </td>
-                    : 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>  
-                  }                   
-                  </tr>
-                ))}
-              </tbody>
-            </table>    
-
-              {primarySponsors.length > 0 && 
-              
-              <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
-              <caption className="text-gray-900 font-medium">Table of Primary Sponsor</caption>
-              <thead className="bg-gray-100">
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                     Image 
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {primarySponsors.map((item) => (
-                  <tr key={item.name}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
-                    {item.image ? 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <img
-                          src={item.image}
-                          alt="Image of Primary Sponsors"
-                          className="w-8 h-8 rounded-full mr-2"
-                        />
-                      </td>
-                    : 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>                    
-                  }                   
+                      :
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>
+                    }
                   </tr>
                 ))}
               </tbody>
             </table>
-              }
+
+            {primarySponsors.length > 0 &&
+
+              <table className="mt-10 w-full divide-y divide-gray-200 table-auto">
+                <caption className="text-gray-900 font-medium">Table of Primary Sponsor</caption>
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Image
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {primarySponsors.map((item) => (
+                    <tr key={item.name}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                      {item.image ?
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          <img
+                            src={item.image}
+                            alt="Image of Primary Sponsors"
+                            className="w-8 h-8 rounded-full mr-2"
+                          />
+                        </td>
+                        :
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.name}</td>
+                      }
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            }
 
           </div>
 
-          </div>
-          {/* Sponsors section can be added here if available in API */}
         </div>
+        {/* Sponsors section can be added here if available in API */}
+      </div>
     </>
   );
 }
