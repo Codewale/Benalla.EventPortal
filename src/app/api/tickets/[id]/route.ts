@@ -309,6 +309,7 @@ export async function GET(req, { params }) {
         'wdrgns_openinghoursfuelshop',
         'wdrgns_openinghourstyres',
         'wdrgns_openinghourstyrebranding',
+        'wdrgns_ticket1stline',
         'wdrgns_ticket2ndline',
         'wdrgns_ticket3rdline',
       ].join(',');
@@ -327,9 +328,10 @@ export async function GET(req, { params }) {
           tyres: res.data?.wdrgns_openinghourstyres || null,
           tyreBranding: res.data?.wdrgns_openinghourstyrebranding || null
         },
+        firstLine: res.data?.wdrgns_ticket1stline || null,
         secondLine: res.data?.wdrgns_ticket2ndline || null,
         thirdLine: res.data?.wdrgns_ticket3rdline || null,
-
+        color: res.data?.wdrgns_eventcolour || null
       };
     } catch (err) {
       console.error("Failed to fetch event description/opening hours:", err.message);
@@ -349,7 +351,7 @@ export async function GET(req, { params }) {
     }
   }
 
-  const { description, openingHours, secondLine, thirdLine, color } = await getEventDescriptionAndOpeningHours(
+  const { description, openingHours, firstLine, secondLine, thirdLine, color } = await getEventDescriptionAndOpeningHours(
     selectedEvent.wdrgns_eventid,
     headers,
     baseUrl
@@ -413,6 +415,7 @@ export async function GET(req, { params }) {
       image: eventImageBase64 || null,
       logo: eventLogoBase64 || null,
       map: eventMapBase64 || null,
+      firstLine: firstLine || null,
       secondLine: secondLine || null,
       thirdLine: thirdLine || null,
     },

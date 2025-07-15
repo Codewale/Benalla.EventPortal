@@ -82,7 +82,7 @@ export default function FirstInfo({ params }) {
               )}
               <div className="flex-1 text-center">
                 <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
-                  {event?.name || null}
+                  {event?.firstLine || null}
                 </h1>
                 <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
                   {event?.secondLine || null}
