@@ -4,6 +4,8 @@ import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import axios from "axios";
 import React from "react";
 import AlertMessages from "@/UI/Alert";
+import SectionHeader from "../components/SectionHeader";
+import WhiteContainer from "../components/WhiteContainer";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
 
 const spaceGrotesk = Space_Grotesk({
@@ -117,38 +119,74 @@ export default function PromoterNsopnsors({ params }) {
                             )}
                         </div>
 
-                        <div className="flex flex-col gap-6 w-full mt-8">
+                        <div className="flex flex-col w-full mt-8">
                             {/* Event Promoters */}
-                            <div className="bg-white rounded-2xl shadow-md p-4">
-                                <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
+                            <>
+                                {/* <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
                                     EVENT PROMOTERS
-                                </div>
-                                <div className="flex flex-col">
-                                    <div className="flex justify-between items-center border-b border-t border-gray-500 p-2">
-                                        <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
-                                            {promoter?.name || "-"}
-                                        </span>
-                                        {promoterLogo && (
-                                            <img
-                                                src={promoterLogo}
-                                                alt="Promoter Logo"
-                                                className="h-6 object-contain"
-                                                style={{ maxWidth: 80 }}
-                                            />
-                                        )}
+                                </div> */}
+                                <SectionHeader param="EVENT PROMOTERS" />
+                                <WhiteContainer>
+                                    <div className="flex flex-col w-[90%]">
+                                        <div className="flex justify-between items-center border-b border-t border-gray-500 p-2">
+                                            <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
+                                                {promoter?.name || "-"}
+                                            </span>
+                                            {promoterLogo && (
+                                                <img
+                                                    src={promoterLogo}
+                                                    alt="Promoter Logo"
+                                                    className="h-6 object-contain"
+                                                    style={{ maxWidth: 80 }}
+                                                />
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                </WhiteContainer>
+
+                            </>
+
 
                             {/* Key Sponsors */}
                             {primarySponsors?.length > 0 && (
-                                <div className="bg-white rounded-2xl shadow-md p-4">
-                                    <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
-                                        KEY SPONSORS
-                                    </div>
-                                    <div className="flex flex-col">
-                                        {primarySponsors.map(
-                                            (item: { name: string; image?: string }) => (
+                                <>
+                                    <SectionHeader param="KEY SPONSORS" />
+                                    <WhiteContainer>
+                                        <div className="flex flex-col w-[90%]">
+                                            {primarySponsors.map(
+                                                (item: { name: string; image?: string }) => (
+                                                    <div
+                                                        key={item.name}
+                                                        className="flex justify-between items-center border-b border-t border-gray-500 py-2"
+                                                    >
+                                                        <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
+                                                            {item.name}
+                                                        </span>
+                                                        {item.image && (
+                                                            <img
+                                                                src={item.image}
+                                                                alt={item.name}
+                                                                className="h-6 object-contain"
+                                                                style={{ maxWidth: 80 }}
+                                                            />
+                                                        )}
+                                                    </div>
+                                                )
+                                            )}
+                                        </div>
+                                    </WhiteContainer>
+
+                                </>
+
+                            )}
+
+                            {/* Sponsors */}
+                            {sponsors?.length > 0 && (
+                                <>
+                                    <SectionHeader param="SPONSORS" />
+                                    <WhiteContainer>
+                                        <div className="flex flex-col w-[90%]">
+                                            {sponsors.map((item: { name: string; image?: string }) => (
                                                 <div
                                                     key={item.name}
                                                     className="flex justify-between items-center border-b border-t border-gray-500 py-2"
@@ -165,39 +203,11 @@ export default function PromoterNsopnsors({ params }) {
                                                         />
                                                     )}
                                                 </div>
-                                            )
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+                                            ))}
+                                        </div>
+                                    </WhiteContainer>
+                                </>
 
-                            {/* Sponsors */}
-                            {sponsors?.length > 0 && (
-                                <div className="bg-white rounded-2xl shadow-md p-4">
-                                    <div className={`text-[0.65rem] font-bold text-red-600 tracking-wide ${archivoBlack.className}`}>
-                                        SPONSORS
-                                    </div>
-                                    <div className="flex flex-col">
-                                        {sponsors.map((item: { name: string; image?: string }) => (
-                                            <div
-                                                key={item.name}
-                                                className="flex justify-between items-center border-b border-t border-gray-500 py-2"
-                                            >
-                                                <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
-                                                    {item.name}
-                                                </span>
-                                                {item.image && (
-                                                    <img
-                                                        src={item.image}
-                                                        alt={item.name}
-                                                        className="h-6 object-contain"
-                                                        style={{ maxWidth: 80 }}
-                                                    />
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
                             )}
                         </div>
                     </div>

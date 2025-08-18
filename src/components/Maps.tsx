@@ -2,6 +2,8 @@
 
 import axios from "axios";
 import React from "react";
+import SectionHeader from "../components/SectionHeader";
+import WhiteContainer from "../components/WhiteContainer";
 import mapsImage from "../app/images/WMR Aerial Map v4 2024-01.jpg";
 import { useTicketAndDisplayData } from "../hooks/useFetch.js";
 import AlertMessages from "@/UI/Alert";
@@ -114,21 +116,15 @@ export default function Maps({ params }) {
                         </div>
 
                         <div className="flex flex-col gap-4 mb-6">
-                            <div className="flex justify-center items-center w-full mb-2">
-                                <div className="bg-[#E53935] rounded-[0.6rem] w-full py-[0.4rem] flex justify-center items-center">
-                                    <span className={`text-white text-xs font-bold uppercase tracking-wider ${archivoBlack.className}`}>
-                                        Maps
-                                    </span>
-                                </div>
-                            </div>
+                            <SectionHeader param="Maps" />
                             <div className="flex flex-col gap-6 items-center w-full">
                                 <div className="w-full flex flex-col gap-2 justify-center items-center">
-                                    <div className="bg-white rounded-xl shadow-md flex-1 flex justify-center items-center w-full min-h-[200px]">
+                                    <WhiteContainer>
                                         {locationMap ? (
                                             <img
                                                 src={locationMap}
                                                 alt="Map of Location"
-                                                className="w-full h-auto object-contain rounded-lg border border-gray-200 bg-white"
+                                                className="w-full h-auto object-contain  rounded-lg border bg-white"
                                                 style={{ width: "100%", backgroundColor: "#fff" }}
                                             />
                                         ) : (
@@ -136,15 +132,19 @@ export default function Maps({ params }) {
                                                 Map of the location
                                             </span>
                                         )}
-                                    </div>
-                                    <div className="bg-white rounded-xl shadow-md flex-1 flex justify-center items-center w-full min-h-[200px]">
+                                    </WhiteContainer>
+
+
+                                    <WhiteContainer>
                                         <img
                                             src={mapsImage.src}
                                             alt="Aerial Map"
-                                            className="w-full h-auto object-contain rounded-lg border border-gray-200 bg-white"
+                                            className="w-full h-auto object-contain rounded-lg border bg-white"
                                             style={{ width: "100%", backgroundColor: "#fff" }}
                                         />
-                                    </div>
+                                    </WhiteContainer>
+
+
                                 </div>
                             </div>
                         </div>

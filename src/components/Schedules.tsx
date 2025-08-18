@@ -3,6 +3,8 @@ import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/UI/Alert";
 import React from "react";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
+import SectionHeader from "../components/SectionHeader";
+import WhiteContainer from "../components/WhiteContainer";
 
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
@@ -127,67 +129,69 @@ export default function Schedules({ params }) {
                         {/* Wrap tables in a scrollable container to prevent overflow */}
                         <div className="w-full flex flex-col items-center">
                             {Object.entries(groupedByDay).map(([day, items]) => (
-                                <div
-                                    key={day}
-                                    className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
-                                >
-                                    <div className={`bg-red-700 text-white text-center font-semibold text-[0.65rem] tracking-wide p-[0.18rem] ${archivoBlack.className}`}>
-                                        EVENT SCHEDULE - {day.toUpperCase()} (
-                                        {items?.length > 0
-                                            ? new Date(items[0].startTime).toLocaleDateString(
-                                                "en-GB",
-                                                {
-                                                    day: "2-digit",
-                                                    month: "short",
-                                                    year: "numeric",
-                                                }
-                                            )
-                                            : ""}
-                                        )
-                                    </div>
-                                    <table className="w-full text-xs">
-                                        <thead>
-                                            <tr className="bg-gray-600 text-white">
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    Event
-                                                </th>
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    Category
-                                                </th>
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    Start
-                                                </th>
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    End
-                                                </th>
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    Session
-                                                </th>
-                                                <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
-                                                    Time
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {items.map((item) => (
-                                                <tr key={item.id} className="even:bg-gray-50">
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">
-                                                        {item.eventNumber}
-                                                        <span
-                                                            className="inline-block w-3 h-3 rounded-full align-middle ml-2"
-                                                            style={{ backgroundColor: item.displayColour || "rgba(0,0,0,0)" }}
-                                                        ></span>
-                                                    </td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.item}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.session}</td>
-                                                    <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.time}</td>
+                                <>
+                                    <SectionHeader
+                                        param={`EVENT SCHEDULE - ${day.toUpperCase()} (${items?.length > 0
+                                            ? new Date(items[0].startTime).toLocaleDateString("en-GB", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric",
+                                            })
+                                            : ""
+                                            })`}
+                                    />
+                                    {/* <div
+                                        key={day}
+                                        className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
+                                    > */}
+                                    <WhiteContainer key={day}>
+                                        <table className="w-full text-xs">
+                                            <thead>
+                                                <tr className="bg-gray-600 text-white">
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        Event
+                                                    </th>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        Category
+                                                    </th>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        Start
+                                                    </th>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        End
+                                                    </th>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        Session
+                                                    </th>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                        Time
+                                                    </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                            </thead>
+                                            <tbody>
+                                                {items.map((item) => (
+                                                    <tr key={item.id} className="even:bg-gray-50">
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">
+                                                            {item.eventNumber}
+                                                            <span
+                                                                className="inline-block w-3 h-3 rounded-full align-middle ml-2"
+                                                                style={{ backgroundColor: item.displayColour || "rgba(0,0,0,0)" }}
+                                                            ></span>
+                                                        </td>
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.item}</td>
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.session}</td>
+                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.time}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </WhiteContainer>
+
+                                    {/* </div> */}
+                                </>
+
                             ))}
                         </div>
                     </div>
