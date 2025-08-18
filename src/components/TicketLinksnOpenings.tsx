@@ -2,7 +2,8 @@
 
 import axios from "axios";
 import React from "react";
-
+import SectionHeader from "../components/SectionHeader";
+import WhiteContainer from "../components/WhiteContainer";
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
@@ -121,7 +122,7 @@ export default function TicketLinksnOpenings({ params }) {
                         </div>
                         <div className="flex flex-col items-center justify-start w-full gap-2">
                             {getLinksByType("Information").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+                                <WhiteContainer>
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Information").map((item) => (
@@ -165,12 +166,16 @@ export default function TicketLinksnOpenings({ params }) {
                                             ))}
                                         </tbody>
                                     </table>
-                                </div>
+                                </WhiteContainer>
+                                // <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+
+                                // </div>
                             )}
 
                             {/* Section for "Document" ticket links */}
                             {getLinksByType("Document").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+                                // <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+                                <WhiteContainer>
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Document").map((item) => (
@@ -214,12 +219,14 @@ export default function TicketLinksnOpenings({ params }) {
                                             ))}
                                         </tbody>
                                     </table>
-                                </div>
+                                </WhiteContainer>
+                                // </div>
                             )}
 
                             {/* Section for "Advertisement" ticket links */}
                             {getLinksByType("Advertising").length > 0 && (
-                                <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+                                // <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
+                                <WhiteContainer>
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Advertising").map((item) => (
@@ -263,11 +270,13 @@ export default function TicketLinksnOpenings({ params }) {
                                             ))}
                                         </tbody>
                                     </table>
-                                </div>
+                                </WhiteContainer>
+                                // </div>
                             )}
                             {/* Opening Hours Card */}
-                            <div className="bg-white rounded-xl shadow-lg w-full p-6">
-                                <div className="grid grid-cols-2 gap-4">
+                            {/* <div className="bg-white rounded-xl shadow-lg w-full p-6"> */}
+                            <WhiteContainer>
+                                <div className="grid grid-cols-2 gap-4 w-full">
                                     <div>
                                         <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
                                             {event?.openingHours?.tyreBranding} Tyre Hours
@@ -301,12 +310,12 @@ export default function TicketLinksnOpenings({ params }) {
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </WhiteContainer>
+                            {/* </div> */}
                         </div>
 
                     </div>
 
-                    {/* Sponsors section can be added here if available in API */}
                 </div>
             </div>
         </>
