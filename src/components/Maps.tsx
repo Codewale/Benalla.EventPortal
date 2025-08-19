@@ -4,6 +4,8 @@ import axios from "axios";
 import React from "react";
 import SectionHeader from "../components/SectionHeader";
 import WhiteContainer from "../components/WhiteContainer";
+import Background from "../components/Background";
+import EventTitle from "../components/EventTitle";
 import mapsImage from "../app/images/WMR Aerial Map v4 2024-01.jpg";
 import { useTicketAndDisplayData } from "../hooks/useFetch.js";
 import AlertMessages from "@/UI/Alert";
@@ -74,46 +76,10 @@ export default function Maps({ params }) {
                     <AlertMessages alertMessageList={alertMessageList || []} />
                 )}
 
-                <div
-                    className="flex justify-between items-start flex-1 w-full min-h-0 mb-[4rem]"
-                    style={{
-                        maxWidth: 690,
-                        position: "relative",
-                        left: "50%",
-                        transform: "translate(-50%, 0)",
-                        minHeight: 0,
-                        backgroundImage: eventImage
-                            ? `linear-gradient(180deg, RGBA(0,0,0,0.1) 10%, RGBA(0,0,0,1) 20%),url('${eventImage}')`
-                            : undefined,
-                        backgroundSize: eventImage ? '100% 100vh, contain' : undefined, // gradient height 150px
-                        backgroundRepeat: 'no-repeat, no-repeat',
-                        backgroundPosition: 'top center, top center',
-                    }}
-                >
+                <Background eventImage={eventImage}>
+
                     <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">
-                        <div className="flex items-center mb-16 justify-around">
-                            {eventImage && (
-                                <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
-                            )}
-                            <div className="flex-1 text-center">
-                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
-                                    {event?.name || null}
-                                </h1>
-                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
-                                    {event?.secondLine || null}
-                                </h1>
-                                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
-                                    {event?.thirdLine || null}
-                                </h1>
-                            </div>
-                            {promoterLogo && (
-                                <img
-                                    src={promoterLogo}
-                                    alt="Promoter Logo"
-                                    className="w-16 h-16 "
-                                />
-                            )}
-                        </div>
+                        <EventTitle params={params} />
 
                         <div className="flex flex-col gap-4 mb-6">
                             <SectionHeader param="Maps" />
@@ -149,7 +115,7 @@ export default function Maps({ params }) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </Background>
             </div>
         </>
     );
