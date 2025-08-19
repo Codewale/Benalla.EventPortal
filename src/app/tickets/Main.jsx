@@ -3,7 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import Footer from "./Footer";
+import Footer from "../../components/Common/Footer";
 
 const pages = [
     { id: "info", component: dynamic(() => import("./FirstInfo")) },

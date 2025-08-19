@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import { useTicketAndDisplayData } from "../hooks/useFetch";
+import { useTicketAndDisplayData } from "../../hooks/useFetch";
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],

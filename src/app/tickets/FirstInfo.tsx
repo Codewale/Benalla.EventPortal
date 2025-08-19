@@ -5,8 +5,8 @@ import axios from "axios";
 import React from "react";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import Background from "../components/Background";
-import EventTitle from "../components/EventTitle";
+import Background from "../../components/Common/Background";
+import EventTitle from "../../components/Common/EventTitle";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],

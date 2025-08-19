@@ -2,9 +2,9 @@
 
 import axios from "axios";
 import React from "react";
-import Background from "../components/Background";
-import WhiteContainer from "../components/WhiteContainer";
-import EventTitle from "../components/EventTitle";
+import Background from "../../components/Common/Background";
+import WhiteContainer from "../../components/Common/WhiteContainer";
+import EventTitle from "../../components/Common/EventTitle";
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
