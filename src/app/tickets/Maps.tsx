@@ -1,13 +1,16 @@
 "use client";
 
-import axios from "axios";
+// import axios from "axios";
 import React from "react";
-import SectionHeader from "../components/SectionHeader";
-import WhiteContainer from "../components/WhiteContainer";
-import Background from "../components/Background";
-import EventTitle from "../components/EventTitle";
-import mapsImage from "../app/images/WMR Aerial Map v4 2024-01.jpg";
-import { useTicketAndDisplayData } from "../hooks/useFetch.js";
+import { useTicketAndDisplayData } from "../../hooks/useFetch.js";
+
+import SectionHeader from "../../components/Common/SectionHeader";
+import WhiteContainer from "../../components/Common/WhiteContainer";
+import Background from "../../components/Common/Background";
+import EventTitle from "../../components/Common/EventTitle";
+
+
+import mapsImage from "../../app/images/WMR Aerial Map v4 2024-01.jpg";
 import AlertMessages from "@/UI/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
 

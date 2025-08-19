@@ -1,25 +1,26 @@
 "use client";
 
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import axios from "axios";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
+// import axios from "axios";
 import React from "react";
 import AlertMessages from "@/UI/Alert";
-import SectionHeader from "../components/SectionHeader";
-import WhiteContainer from "../components/WhiteContainer";
-import Background from "../components/Background";
-import EventTitle from "../components/EventTitle";
 
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
+import SectionHeader from "../../components/Common/SectionHeader";
+import WhiteContainer from "../../components/Common/WhiteContainer";
+import Background from "../../components/Common/Background";
+import EventTitle from "../../components/Common/EventTitle";
+
 
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
 });
 
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+// const archivoBlack = Archivo_Black({
+//     subsets: ["latin"],
+//     weight: ["400"],
+// });
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);

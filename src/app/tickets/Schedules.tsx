@@ -3,10 +3,10 @@ import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/UI/Alert";
 import React from "react";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import SectionHeader from "../components/SectionHeader";
-import WhiteContainer from "../components/WhiteContainer";
-import Background from "../components/Background";
-import EventTitle from "../components/EventTitle";
+import SectionHeader from "../../components/Common/SectionHeader";
+import WhiteContainer from "../../components/Common/WhiteContainer";
+import Background from "../../components/Common/Background";
+import EventTitle from "../../components/Common/EventTitle";
 
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
