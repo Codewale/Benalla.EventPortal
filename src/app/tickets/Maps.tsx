@@ -1,28 +1,20 @@
-"use client";
+// "use client";
 
 // import axios from "axios";
 import React from "react";
-import { useTicketAndDisplayData } from "../../hooks/useFetch.js";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
 
-import SectionHeader from "../../components/Common/SectionHeader";
-import WhiteContainer from "../../components/Common/WhiteContainer";
-import Background from "../../components/Common/Background";
-import EventTitle from "../../components/Common/EventTitle";
+import SectionHeader from "@/Components/Common/SectionHeader";
+import WhiteContainer from "@/Components/Common/WhiteContainer";
+import Background from "@/Components/Common/Background";
+import EventTitle from "@/Components/Common/EventTitle";
 
 
-import mapsImage from "../../app/images/WMR Aerial Map v4 2024-01.jpg";
-import AlertMessages from "@/UI/Alert";
+import mapsImage from "@/images/WMR Aerial Map v4 2024-01.jpg";
+import AlertMessages from "@/Components/Common/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+import Loader from "@/Components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -41,7 +33,7 @@ export default function Maps({ params }) {
         useTicketAndDisplayData(params.id);
 
     if (isTicketLoading) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <Loader />;
     }
 
     if (ticketError) {
@@ -81,8 +73,10 @@ export default function Maps({ params }) {
 
                 <Background eventImage={eventImage}>
 
-                    <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">
-                        <EventTitle params={params} />
+                    <div className="shadow-2xl w-full p-4">
+                        <div className="md:px-12 md:pt-12 pb-0" >
+                            <EventTitle params={params} />
+                        </div>
 
                         <div className="flex flex-col gap-4 mb-6">
                             <SectionHeader param="Maps" />

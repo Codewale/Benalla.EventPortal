@@ -1,9 +1,5 @@
-"use client";
-import { Archivo_Black } from "next/font/google";
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
 
 export default function SectionHeader({ param }) {

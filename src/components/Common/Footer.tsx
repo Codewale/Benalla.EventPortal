@@ -1,15 +1,6 @@
-"use client";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
+// "use client";
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
 export default function Footer({
     handleDecrement,
     handleIncrement,
