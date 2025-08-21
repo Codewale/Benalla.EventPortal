@@ -1,22 +1,15 @@
 "use client";
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import AlertMessages from "@/UI/Alert";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import AlertMessages from "@/Components/Common/Alert";
 import React from "react";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import SectionHeader from "../../components/Common/SectionHeader";
-import WhiteContainer from "../../components/Common/WhiteContainer";
-import Background from "../../components/Common/Background";
-import EventTitle from "../../components/Common/EventTitle";
+import SectionHeader from "@/Components/Common/SectionHeader";
+import WhiteContainer from "@/Components/Common/WhiteContainer";
+import Background from "@/Components/Common/Background";
+import EventTitle from "@/Components/Common/EventTitle";
+import Loader from "@/Components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
 
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -35,7 +28,7 @@ export default function Schedules({ params }) {
         useTicketAndDisplayData(params.id);
 
     if (isTicketLoading) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <Loader />;
     }
 
     if (ticketError) {
@@ -77,7 +70,7 @@ export default function Schedules({ params }) {
         return acc;
     }, {});
 
-    console.log(eventSchedules);
+    // console.log(eventImage);
     return (
         <>
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
@@ -89,8 +82,11 @@ export default function Schedules({ params }) {
 
                 <Background eventImage={eventImage}>
 
-                    <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">
-                        <EventTitle params={params} />
+                    <div className="shadow-2xl w-full p-4">
+                        <div className="md:px-12 md:pt-12 pb-0" >
+                            <EventTitle params={params} />
+                        </div>
+
 
                         {/* Wrap tables in a scrollable container to prevent overflow */}
                         <div className="w-full flex flex-col items-center">
@@ -107,29 +103,29 @@ export default function Schedules({ params }) {
                                             })`}
                                     />
                                     {/* <div
-                                        key={day}
-                                        className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
-                                    > */}
+key={day}
+className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
+> */}
                                     <WhiteContainer key={day}>
                                         <table className="w-full text-xs">
                                             <thead>
                                                 <tr className="bg-gray-600 text-white">
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                         Event
                                                     </th>
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                         Category
                                                     </th>
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                         Start
                                                     </th>
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon  ${archivoBlack.className}`}>
                                                         End
                                                     </th>
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                         Session
                                                     </th>
-                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left text-[0.55rem] ${spaceGrotesk.className}`}>
+                                                    <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                         Time
                                                     </th>
                                                 </tr>
@@ -137,18 +133,18 @@ export default function Schedules({ params }) {
                                             <tbody>
                                                 {items.map((item) => (
                                                     <tr key={item.id} className="even:bg-gray-50">
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">
+                                                        <td className="px-1 border-b border-b-gray-500 text-black textSizeCommon">
                                                             {item.eventNumber}
                                                             <span
                                                                 className="inline-block w-3 h-3 rounded-full align-middle ml-2"
                                                                 style={{ backgroundColor: item.displayColour || "rgba(0,0,0,0)" }}
                                                             ></span>
                                                         </td>
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.item}</td>
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.session}</td>
-                                                        <td className="px-1 border-b border-b-gray-500 text-black text-[0.55rem]">{item.time}</td>
+                                                        <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{item.item}</td>
+                                                        <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
+                                                        <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{formatTimeFromISOString(item.endTime, { timeZone: "UTC" })}</td>
+                                                        <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{item.session}</td>
+                                                        <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{item.time}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>

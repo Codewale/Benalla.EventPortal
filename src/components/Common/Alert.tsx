@@ -1,15 +1,6 @@
 import React from "react";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
 interface AlertItem {
     id: string;
     alertText?: string;

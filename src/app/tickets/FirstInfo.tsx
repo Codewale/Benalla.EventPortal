@@ -1,22 +1,13 @@
-"use client";
+// "use client";
 
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
 import axios from "axios";
 import React from "react";
-import AlertMessages from "@/UI/Alert";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import Background from "../../components/Common/Background";
-import EventTitle from "../../components/Common/EventTitle";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-  subsets: ["latin"],
-  weight: ["400"],
-});
+import AlertMessages from "@/Components/Common/Alert";
+import Background from "@/Components/Common/Background";
+import EventTitle from "@/Components/Common/EventTitle";
+import Loader from "@/Components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
 
 export default function FirstInfo({ params }) {
 
@@ -24,7 +15,7 @@ export default function FirstInfo({ params }) {
     useTicketAndDisplayData(params.id);
 
   if (isTicketLoading) {
-    return <div className="text-white text-center mt-10">Loading...</div>;
+    return <Loader />;
   }
 
   if (ticketError) {
@@ -72,14 +63,14 @@ export default function FirstInfo({ params }) {
                 <img
                   src={qr}
                   alt="QR CODE"
-                  className="w-[250px] h-[250px] object-cover rounded-3xl mb-6"
+                  className="w-[400px] h-[400px] object-cover rounded-3xl mb-6"
                 />
               </div>
             )}
 
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   CONTACT
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
@@ -87,7 +78,7 @@ export default function FirstInfo({ params }) {
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   REMAINING SCANS
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
@@ -95,7 +86,7 @@ export default function FirstInfo({ params }) {
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   VALID FROM
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
@@ -103,7 +94,7 @@ export default function FirstInfo({ params }) {
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   VALID TO
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
@@ -111,15 +102,15 @@ export default function FirstInfo({ params }) {
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   LOCATION
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  <a className={`text-white font-bold text-sm no-underline ${spaceGrotesk.className}`} href={`https://www.bing.com/maps?cp=${location.suburbCoordinates.latitude}%7E${location.suburbCoordinates.longitude}&lvl=15`} target="_blank">{location?.name || "-"}</a>
+                  <a className={`text-white font-bold text-sm underline ${spaceGrotesk.className}`} href={`https://www.bing.com/maps?cp=${location.suburbCoordinates.latitude}%7E${location.suburbCoordinates.longitude}&lvl=15`} target="_blank">{location?.name || "-"}</a>
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   DESCRIPTION
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
@@ -127,7 +118,7 @@ export default function FirstInfo({ params }) {
                 </div>
               </div>
               <div>
-                <div className={`font-bold text-[#da2127] text-[0.7rem] ${archivoBlack.className}`}>
+                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
                   ADDRESS LINE
                 </div>
                 <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>

@@ -1,12 +1,6 @@
-"use client";
 
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import { Archivo_Black } from "next/font/google";
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
 
 export default function EventTitle({ params }) {
@@ -34,18 +28,18 @@ export default function EventTitle({ params }) {
     const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
 
     return (
-        <div className="flex items-center mb-16 justify-around">
+        <div className="flex items-center mb-16 justify-around ">
             {eventImage && (
                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
             )}
             <div className="flex-1 text-center">
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
+                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`} >
                     {event?.firstLine || null}
                 </h1>
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
+                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`}>
                     {event?.secondLine || null}
                 </h1>
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className}`}>
+                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`}>
                     {event?.thirdLine || null}
                 </h1>
             </div>
