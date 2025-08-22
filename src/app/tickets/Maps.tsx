@@ -2,27 +2,18 @@
 
 // import axios from "axios";
 import React from "react";
-import { useTicketAndDisplayData } from "../../hooks/useFetch.js";
 
-import SectionHeader from "../../components/Common/SectionHeader";
-import WhiteContainer from "../../components/Common/WhiteContainer";
-import Background from "../../components/Common/Background";
-import EventTitle from "../../components/Common/EventTitle";
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
+
+import SectionHeader from "@/components/common/SectionHeader";
+import WhiteContainer from "@/components/common/WhiteContainer";
+import Background from "@/components/common/Background";
+import EventTitle from "@/components/common/EventTitle";
 
 
-import mapsImage from "../../app/images/WMR Aerial Map v4 2024-01.jpg";
-import AlertMessages from "@/UI/Alert";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+import mapsImage from "@/images/WMR Aerial Map v4 2024-01.jpg";
+import AlertMessages from "@/components/common/Alert";
+import PageLoader from "@/components/common/PageLoader";
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -41,7 +32,7 @@ export default function Maps({ params }) {
         useTicketAndDisplayData(params.id);
 
     if (isTicketLoading) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <PageLoader />
     }
 
     if (ticketError) {

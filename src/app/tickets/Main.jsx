@@ -3,7 +3,8 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 
-import Footer from "../../components/Common/Footer";
+import Footer from "@/components/common/Footer";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
 
 const pages = [
     { id: "info", component: dynamic(() => import("./FirstInfo")) },
@@ -32,11 +33,12 @@ export default function Main({ params }) {
         handleDecrement,
         totalPages: pages.length,
     };
+    const ifLoading = useTicketAndDisplayData(params.id)
 
     return (
         <>
             <PageComponent params={params} />
-            <Footer {...footerProps} />
+            {!ifLoading.isTicketLoading && <Footer {...footerProps} />}
         </>
     );
 }

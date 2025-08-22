@@ -1,26 +1,17 @@
-"use client";
+// "use client";
 
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
 // import axios from "axios";
 import React from "react";
-import AlertMessages from "@/UI/Alert";
+import AlertMessages from "@/components/common/Alert";
 
-import SectionHeader from "../../components/Common/SectionHeader";
-import WhiteContainer from "../../components/Common/WhiteContainer";
-import Background from "../../components/Common/Background";
-import EventTitle from "../../components/Common/EventTitle";
-
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-// const archivoBlack = Archivo_Black({
-//     subsets: ["latin"],
-//     weight: ["400"],
-// });
+import SectionHeader from "@/components/common/SectionHeader";
+import WhiteContainer from "@/components/common/WhiteContainer";
+import Background from "@/components/common/Background";
+import EventTitle from "@/components/common/EventTitle";
+import Loader from "@/components/common/PageLoader";
+import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -40,7 +31,7 @@ export default function PromoterNsopnsors({ params }) {
         useTicketAndDisplayData(params.id);
 
     if (isTicketLoading) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <Loader />;
     }
 
     if (ticketError) {
@@ -84,8 +75,10 @@ export default function PromoterNsopnsors({ params }) {
 
                 <Background eventImage={eventImage}>
 
-                    <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">
-                        <EventTitle params={params} />
+                    <div className="shadow-2xl w-full p-4">
+                        <div className="md:px-12 md:pt-12 pb-0" >
+                            <EventTitle params={params} />
+                        </div>
 
                         <div className="flex flex-col w-full mt-8">
                             {/* Event Promoters */}
@@ -97,7 +90,7 @@ export default function PromoterNsopnsors({ params }) {
                                 <WhiteContainer>
                                     <div className="flex flex-col w-[90%]">
                                         <div className="flex justify-between items-center border-b border-t border-gray-500 p-2">
-                                            <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
+                                            <span className={`font-semibold text-gray-800 textSizeCommon ${spaceGrotesk.className}`}>
                                                 {promoter?.name || "-"}
                                             </span>
                                             {promoterLogo && (
@@ -127,7 +120,7 @@ export default function PromoterNsopnsors({ params }) {
                                                         key={item.name}
                                                         className="flex justify-between items-center border-b border-t border-gray-500 py-2"
                                                     >
-                                                        <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
+                                                        <span className={`font-semibold text-gray-800 textSizeCommon ${spaceGrotesk.className}`}>
                                                             {item.name}
                                                         </span>
                                                         {item.image && (
@@ -157,9 +150,9 @@ export default function PromoterNsopnsors({ params }) {
                                             {sponsors.map((item: { name: string; image?: string }) => (
                                                 <div
                                                     key={item.name}
-                                                    className="flex justify-between items-center border-b border-t border-gray-500 py-2"
+                                                    className="flex justify-between textSizeCommon items-center border-b border-t border-gray-500 py-2"
                                                 >
-                                                    <span className={`font-semibold text-gray-800 text-xs ${spaceGrotesk.className}`}>
+                                                    <span className={`font-semibold text-gray-800 ${spaceGrotesk.className}`}>
                                                         {item.name}
                                                     </span>
                                                     {item.image && (

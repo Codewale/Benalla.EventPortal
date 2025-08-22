@@ -1,13 +1,6 @@
-"use client";
 
-"use client";
-import { Archivo_Black } from "next/font/google";
 import { Children } from "react";
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
-
+import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
 
 export default function Background({ children, eventImage }) {
     return (

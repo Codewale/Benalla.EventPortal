@@ -1,13 +1,6 @@
-"use client";
 
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import { Archivo_Black } from "next/font/google";
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
-
+import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
 
 export default function EventTitle({ params }) {
 

@@ -1,23 +1,15 @@
-"use client";
+// "use client";
 
 import axios from "axios";
 import React from "react";
-import Background from "../../components/Common/Background";
-import WhiteContainer from "../../components/Common/WhiteContainer";
-import EventTitle from "../../components/Common/EventTitle";
+import Background from "@/components/common/Background";
+import WhiteContainer from "@/components/common/WhiteContainer";
+import EventTitle from "@/components/common/EventTitle";
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import AlertMessages from "@/UI/Alert";
+import AlertMessages from "@/components/common/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-});
-
-const archivoBlack = Archivo_Black({
-    subsets: ["latin"],
-    weight: ["400"],
-});
+import Loader from "@/components/common/PageLoader";
+import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -36,7 +28,7 @@ export default function TicketLinksnOpenings({ params }) {
         useTicketAndDisplayData(params.id);
 
     if (isTicketLoading) {
-        return <div className="text-white text-center mt-10">Loading...</div>;
+        return <Loader />;
     }
 
     if (ticketError) {
@@ -82,9 +74,10 @@ export default function TicketLinksnOpenings({ params }) {
 
                 <Background eventImage={eventImage}>
 
-                    {/* Ticket Links Table */}
-                    <div className="shadow-2xl w-full p-4 md:p-12 lg:p-14">
-                        <EventTitle params={params} />
+                    <div className="shadow-2xl w-full p-4">
+                        <div className="md:px-12 md:pt-12 pb-0" >
+                            <EventTitle params={params} />
+                        </div>
 
                         <div className="flex flex-col items-center justify-start w-full gap-2">
                             {getLinksByType("Information").length > 0 && (
@@ -96,7 +89,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Heading row */}
                                                     <tr>
                                                         <td colSpan={2} className="py-0.5 text-center">
-                                                            <span className={`font-bold text-[0.65rem] uppercase text-red-700 ${archivoBlack.className}`}>
+                                                            <span className={`font-bold textSizeCommon uppercase text-red-700 ${archivoBlack.className}`}>
                                                                 {item.name}
                                                             </span>
                                                         </td>
@@ -121,7 +114,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                                 href={item.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                                className="textSizeCommon text-black font-semibold break-all no-underline"
                                                                 style={{ textDecoration: "none" }}
                                                             >
                                                                 {item.url}
@@ -149,7 +142,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Heading row */}
                                                     <tr>
                                                         <td colSpan={2} className="py-0.5 text-center">
-                                                            <span className={`font-bold text-[0.65rem] uppercase text-red-700 ${archivoBlack.className}`}>
+                                                            <span className={`font-bold textSizeCommon uppercase text-red-700 ${archivoBlack.className}`}>
                                                                 {item.name}
                                                             </span>
                                                         </td>
@@ -174,7 +167,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                                 href={item.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                                className="textSizeCommon text-black font-semibold break-all no-underline"
                                                                 style={{ textDecoration: "none" }}
                                                             >
                                                                 {item.url}
@@ -200,7 +193,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                     {/* Heading row */}
                                                     <tr>
                                                         <td colSpan={2} className="py-0.5 text-center">
-                                                            <span className={`font-bold text-[0.65rem] uppercase text-red-700 ${archivoBlack.className}`}>
+                                                            <span className={`font-bold textSizeCommon uppercase text-red-700 ${archivoBlack.className}`}>
                                                                 {item.name}
                                                             </span>
                                                         </td>
@@ -225,7 +218,7 @@ export default function TicketLinksnOpenings({ params }) {
                                                                 href={item.url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-[0.65rem] text-black font-semibold break-all no-underline"
+                                                                className="textSizeCommon text-black font-semibold break-all no-underline"
                                                                 style={{ textDecoration: "none" }}
                                                             >
                                                                 {item.url}
@@ -244,34 +237,34 @@ export default function TicketLinksnOpenings({ params }) {
                             <WhiteContainer>
                                 <div className="grid grid-cols-2 gap-4 w-full">
                                     <div>
-                                        <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
+                                        <div className={`text-red-700 textSizeCommon uppercase font-semibold ${archivoBlack.className}`}>
                                             {event?.openingHours?.tyreBranding} Tyre Hours
                                         </div>
-                                        <div className={`text-gray-900 text-[0.7rem] font-bold ${spaceGrotesk.className}`}>
+                                        <div className={`text-gray-900 textSizeCommon font-bold ${spaceGrotesk.className}`}>
                                             {event?.openingHours?.tyres || "-"}
                                         </div>
                                     </div>
                                     <div>
-                                        <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
+                                        <div className={`text-red-700 textSizeCommon uppercase font-semibold ${archivoBlack.className}`}>
                                             Cafe Hours
                                         </div>
-                                        <div className={`text-gray-900 text-[0.7rem] font-bold ${spaceGrotesk.className}`}>
+                                        <div className={`text-gray-900 textSizeCommon font-bold ${spaceGrotesk.className}`}>
                                             {event?.openingHours?.cafe || "-"}
                                         </div>
                                     </div>
                                     <div>
-                                        <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
+                                        <div className={`text-red-700 textSizeCommon uppercase font-semibold ${archivoBlack.className}`}>
                                             {event?.openingHours?.officeBranding}Office Hours
                                         </div>
-                                        <div className={`text-gray-900 text-[0.7rem] font-bold ${spaceGrotesk.className}`}>
+                                        <div className={`text-gray-900 textSizeCommon font-bold ${spaceGrotesk.className}`}>
                                             {event?.openingHours?.office || "-"}
                                         </div>
                                     </div>
                                     <div>
-                                        <div className={`text-red-700 text-[0.55rem] uppercase font-semibold ${archivoBlack.className}`}>
+                                        <div className={`text-red-700 textSizeCommon uppercase font-semibold ${archivoBlack.className}`}>
                                             Fuel Shop Hours
                                         </div>
-                                        <div className={`text-gray-900 text-[0.7rem] font-bold ${spaceGrotesk.className}`}>
+                                        <div className={`text-gray-900 textSizeCommon font-bold ${spaceGrotesk.className}`}>
                                             {event?.openingHours?.fuelShop || "-"}
                                         </div>
                                     </div>
