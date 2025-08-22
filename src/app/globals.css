@@ -30,3 +30,21 @@ body {
 .textSizeCommon {
   font-size: 0.75rem !important;
 }
+
+h1 {
+  font-size: 1.11rem;
+  font-weight: 700;     /* bold */
+  color: #ffffff;
+}
+
+h2 {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+body1 {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25rem;
+}

@@ -1,7 +1,7 @@
 
 import { useTicketAndDisplayData } from "@/Hooks/useFetch";
 import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
-
+import EventHeading from './EventHeading';
 
 export default function EventTitle({ params }) {
 
@@ -33,15 +33,9 @@ export default function EventTitle({ params }) {
                 <img src={eventLogo} alt="Event Logo" className="w-16 h-16" />
             )}
             <div className="flex-1 text-center">
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`} >
-                    {event?.firstLine || null}
-                </h1>
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`}>
-                    {event?.secondLine || null}
-                </h1>
-                <h1 className={`text-sm font-bold text-white ${archivoBlack.className} text-[1.11rem]`}>
-                    {event?.thirdLine || null}
-                </h1>
+                <EventHeading archivoBlack={archivoBlack}>{event?.firstLine || null}</EventHeading>
+                <EventHeading archivoBlack={archivoBlack}>{event?.secondLine || null}</EventHeading>
+                <EventHeading archivoBlack={archivoBlack}>{event?.thirdLine || null}</EventHeading>
             </div>
             {promoterLogo && (
                 <img
