@@ -8,6 +8,7 @@ import Background from "@/Components/Common/Background";
 import EventTitle from "@/Components/Common/EventTitle";
 import Loader from "@/Components/Common/Loader";
 import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
+import InfoBlock from '@/Components/Common/InfoBlock';
 
 export default function FirstInfo({ params }) {
 
@@ -30,18 +31,11 @@ export default function FirstInfo({ params }) {
   const ticketType = ticketDetails.ticketType;
   const contact = ticketDetails.contact;
   const event = ticketDetails.event;
-  const promoter = ticketDetails.promoter;
   const location = ticketDetails.location;
-  const sponsors = ticketDetails.sponsors;
-  const primarySponsors = ticketDetails.primarySponsors;
   const qrCode = ticketDetails.qrCode;
-  const eventSchedules = ticketDetails.eventSchedules;
   const alertMessageList = ticketDetails.eventAlerts;
 
   const eventImage = event?.image ? `${event.image}` : "";
-  const eventLogo = event?.logo ? `${event.logo}` : "";
-  const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
-  const locationMap = event?.map ? `${event.map}` : "";
   const qr = qrCode ? `${qrCode}` : "";
 
   return (
@@ -69,62 +63,13 @@ export default function FirstInfo({ params }) {
             )}
 
             <div className="grid grid-cols-2 gap-4 mb-6">
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  CONTACT
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {contact?.fullname || "-"}
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  REMAINING SCANS
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {ticket?.remainingScans ?? "N/A"}
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  VALID FROM
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {ticketType?.validFrom?.slice(0, 10) || "-"}
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  VALID TO
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {ticketType?.validTo?.slice(0, 10) || "-"}
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  LOCATION
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  <a className={`text-white font-bold text-sm underline ${spaceGrotesk.className}`} href={`https://www.bing.com/maps?cp=${location.suburbCoordinates.latitude}%7E${location.suburbCoordinates.longitude}&lvl=15`} target="_blank">{location?.name || "-"}</a>
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  DESCRIPTION
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {event?.description || "-"}
-                </div>
-              </div>
-              <div>
-                <div className={`font-bold text-[#da2127] textSizeCommon ${archivoBlack.className}`}>
-                  ADDRESS LINE
-                </div>
-                <div className={`text-white font-bold text-sm ${spaceGrotesk.className}`}>
-                  {location?.addressLine1 || location?.addressLine2 || "-"}
-                </div>
-              </div>
+              <InfoBlock heading={'CONTACT'} value={contact?.fullname || "-"} />
+              <InfoBlock heading={'REMAINING SCANS'} value={ticket?.remainingScans ?? "N/A"} />
+              <InfoBlock heading={'VALID FROM'} value={ticketType?.validFrom?.slice(0, 10) || "-"} />
+              <InfoBlock heading={'VALID TO'} value={ticketType?.validTo?.slice(0, 10) || "-"} />
+              <InfoBlock heading={'LOCATION'} value={<a className={`body1 underline ${spaceGrotesk.className}`} href={`https://www.bing.com/maps?cp=${location.suburbCoordinates.latitude}%7E${location.suburbCoordinates.longitude}&lvl=15`} target="_blank">{location?.name || "-"}</a>} />
+              <InfoBlock heading={'DESCRIPTION'} value={event?.description || "-"} />
+              <InfoBlock heading={'ADDRESS LINE'} value={location?.addressLine1 || location?.addressLine2 || "-"} />
             </div>
           </div>
         </Background>
