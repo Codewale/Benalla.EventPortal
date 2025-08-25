@@ -1,5 +1,5 @@
 // "use client";
-import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
 export default function Footer({
     handleDecrement,
