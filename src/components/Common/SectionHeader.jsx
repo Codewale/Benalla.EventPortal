@@ -1,5 +1,5 @@
 
-import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
 
 export default function SectionHeader({ param }) {

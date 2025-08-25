@@ -2,13 +2,25 @@
 
 import axios from "axios";
 import React from "react";
-import Background from "@/components/common/Background";
-import WhiteContainer from "@/components/common/WhiteContainer";
-import EventTitle from "@/components/common/EventTitle";
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import AlertMessages from "@/components/common/Alert";
-import Loader from "@/components/common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
+import Background from "@/Components/Common/Background";
+import WhiteContainer from "@/Components/Common/WhiteContainer";
+import EventTitle from "@/Components/Common/EventTitle";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import AlertMessages from "@/Components/Common/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
+import Loader from "@/Components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
+
+function formatTimeFromISOString(isoString, options = {}) {
+    const date = new Date(isoString);
+
+    return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        ...options,
+    });
+}
 
 export default function TicketLinksnOpenings({ params }) {
 

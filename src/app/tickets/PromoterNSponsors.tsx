@@ -1,14 +1,28 @@
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
+// "use client";
+
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
+// import axios from "axios";
 import React from "react";
-import AlertMessages from "@/components/common/Alert";
+import AlertMessages from "@/Components/Common/Alert";
 
-import SectionHeader from "@/components/common/SectionHeader";
-import WhiteContainer from "@/components/common/WhiteContainer";
-import Background from "@/components/common/Background";
-import EventTitle from "@/components/common/EventTitle";
-import Loader from "@/components/common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
+import SectionHeader from "@/Components/Common/SectionHeader";
+import WhiteContainer from "@/Components/Common/WhiteContainer";
+import Background from "@/Components/Common/Background";
+import EventTitle from "@/Components/Common/EventTitle";
+import Loader from "@/Components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
 
+function formatTimeFromISOString(isoString, options = {}) {
+    const date = new Date(isoString);
+
+    return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        ...options,
+    });
+}
 
 export default function PromoterNsopnsors({ params }) {
 

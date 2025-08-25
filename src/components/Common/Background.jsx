@@ -1,6 +1,6 @@
 
 import { Children } from "react";
-import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
+import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
 
 
 export default function Background({ children, eventImage }) {

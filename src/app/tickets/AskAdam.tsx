@@ -1,14 +1,22 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AlertMessages from "@/components/common/Alert";
-import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import Background from "@/components/common/Background";
-import EventTitle from "@/components/common/EventTitle";
-import WhiteContainer from "@/components/common/WhiteContainer";
-import SectionHeader from "@/components/common/SectionHeader";
-import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
+import AlertMessages from "@/Components/Common/Alert";
+import { Space_Grotesk, Archivo_Black } from "next/font/google";
+import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import Background from "../../Components/Common/Background";
+import EventTitle from "@/Components/Common/EventTitle";
+import WhiteContainer from "@/Components/Common/WhiteContainer";
+import SectionHeader from "@/Components/Common/SectionHeader";
+const spaceGrotesk = Space_Grotesk({
+    subsets: ["latin"],
+    weight: ["600"],
+});
 
+const archivoBlack = Archivo_Black({
+    subsets: ["latin"],
+    weight: ["400"],
+});
 async function getTicket(id) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL || "http://localhost:3000";
     return await axios.get(`${baseUrl}/api/tickets/${id}`);
