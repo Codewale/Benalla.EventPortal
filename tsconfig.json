@@ -16,7 +16,7 @@
     "incremental": true,
     "strict": false,
     "resolveJsonModule": true,
-    "isolatedModules": false,
+    "isolatedModules": true,
     "noImplicitAny": false,
     "plugins": [
       {
