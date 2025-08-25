@@ -7,16 +7,17 @@
     ],
     "noEmit": true,
     "skipLibCheck": true,
-    "noImplicitAny": false,
     "allowJs": true,
-    // "strict": true,
+    "checkJs": false,
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
-    // "resolveJsonModule": true,
-    // "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "strict": false,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noImplicitAny": false,
     "plugins": [
       {
         "name": "next"
@@ -26,20 +27,18 @@
       "@/*": [
         "./src/*"
       ]
-    },
-    "strict": false,
-    "resolveJsonModule": true,
-    "isolatedModules": true
+    }
   },
-  // "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": [
-    "node_modules"
-  ],
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/components/Main.jsx"
-, "src/app/tickets/PromoterNSponsors.tsx", "src/app/tickets/AskAdam.tsx", "src/app/tickets/FirstInfo.tsx", "src/app/tickets/Maps.tsx", "src/app/tickets/Schedules.tsx", "src/app/tickets/TicketLinksnOpenings.tsx", "src/app/page.tsx", "src/app/layout.tsx"  ]
+    "**/*.js",
+    "**/*.jsx",
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
