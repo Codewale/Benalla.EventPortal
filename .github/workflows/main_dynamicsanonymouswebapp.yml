@@ -52,4 +52,4 @@ jobs:
           app-name: 'DynamicsAnonymousWebApp'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C489DDEAB207425C954769F67F85F619 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5290F29044BD451BAA29E3FEA1BA3468 }}
