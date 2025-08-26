@@ -1,13 +1,13 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AlertMessages from "@/Components/Common/Alert";
+import AlertMessages from "@/components/Common/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import { useTicketAndDisplayData } from "@/Hooks/useFetch";
-import Background from "../../Components/Common/Background";
-import EventTitle from "@/Components/Common/EventTitle";
-import WhiteContainer from "@/Components/Common/WhiteContainer";
-import SectionHeader from "@/Components/Common/SectionHeader";
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
+import Background from "../../components/Common/Background";
+import EventTitle from "@/components/Common/EventTitle";
+import WhiteContainer from "@/components/Common/WhiteContainer";
+import SectionHeader from "@/components/Common/SectionHeader";
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],

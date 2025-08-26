@@ -1,6 +1,6 @@
 
-import { useTicketAndDisplayData } from "@/Hooks/useFetch";
-import { spaceGrotesk, archivoBlack } from '@/Fonts/fonts'
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
+import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
 
 
 export default function EventTitle({ params }) {

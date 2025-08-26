@@ -2,14 +2,14 @@
 
 import axios from "axios";
 import React from "react";
-import Background from "@/Components/Common/Background";
-import WhiteContainer from "@/Components/Common/WhiteContainer";
-import EventTitle from "@/Components/Common/EventTitle";
-import { useTicketAndDisplayData } from "@/Hooks/useFetch";
-import AlertMessages from "@/Components/Common/Alert";
+import Background from "@/components/Common/Background";
+import WhiteContainer from "@/components/Common/WhiteContainer";
+import EventTitle from "@/components/Common/EventTitle";
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
+import AlertMessages from "@/components/Common/Alert";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
-import Loader from "@/Components/Common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
+import Loader from "@/components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
