@@ -25,6 +25,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
       ]
     },
     "strict": false,
@@ -40,6 +43,14 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "src/components/Main.jsx"
-, "src/app/tickets/PromoterNSponsors.tsx", "src/app/tickets/AskAdam.tsx", "src/app/tickets/FirstInfo.tsx", "src/app/tickets/Maps.tsx", "src/app/tickets/Schedules.tsx", "src/app/tickets/TicketLinksnOpenings.tsx", "src/app/page.tsx", "src/app/layout.tsx"  ]
+    "src/components/Main.jsx",
+    "src/app/tickets/PromoterNSponsors.tsx",
+    "src/app/tickets/AskAdam.tsx",
+    "src/app/tickets/FirstInfo.tsx",
+    "src/app/tickets/Maps.tsx",
+    "src/app/tickets/Schedules.tsx",
+    "src/app/tickets/TicketLinksnOpenings.tsx",
+    "src/app/page.tsx",
+    "src/app/layout.tsx"
+  ]
 }
