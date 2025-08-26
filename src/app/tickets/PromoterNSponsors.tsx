@@ -1,17 +1,17 @@
 // "use client";
 
-import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import { Space_Grotesk, Archivo_Black } from "next/font/google";
 // import axios from "axios";
 import React from "react";
-import AlertMessages from "@/Components/Common/Alert";
+import AlertMessages from "@/components/Common/Alert";
 
-import SectionHeader from "@/Components/Common/SectionHeader";
-import WhiteContainer from "@/Components/Common/WhiteContainer";
-import Background from "@/Components/Common/Background";
-import EventTitle from "@/Components/Common/EventTitle";
-import Loader from "@/Components/Common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
+import SectionHeader from "@/components/Common/SectionHeader";
+import WhiteContainer from "@/components/Common/WhiteContainer";
+import Background from "@/components/Common/Background";
+import EventTitle from "@/components/Common/EventTitle";
+import Loader from "@/components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);

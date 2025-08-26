@@ -1,13 +1,13 @@
 // "use client";
 
-import { useTicketAndDisplayData } from "@/Hooks/useFetch";
+import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import axios from "axios";
 import React from "react";
-import AlertMessages from "@/Components/Common/Alert";
-import Background from "@/Components/Common/Background";
-import EventTitle from "@/Components/Common/EventTitle";
-import Loader from "@/Components/Common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/Fonts/fonts'
+import AlertMessages from "@/components/Common/Alert";
+import Background from "@/components/Common/Background";
+import EventTitle from "@/components/Common/EventTitle";
+import Loader from "@/components/Common/Loader";
+import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
 export default function FirstInfo({ params }) {
 
