@@ -99,7 +99,8 @@ export async function POST(req, { params }) {
           },
         }
       );
-    } else {
+    }
+    else {
       console.log("OK — Last record is older than 5 minutes. Proceeding...");
       const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
       const headers = {

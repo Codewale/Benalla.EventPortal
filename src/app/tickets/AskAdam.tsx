@@ -8,6 +8,7 @@ import Background from "../../components/Common/Background";
 import EventTitle from "@/components/Common/EventTitle";
 import WhiteContainer from "@/components/Common/WhiteContainer";
 import SectionHeader from "@/components/Common/SectionHeader";
+import ErrorAlertMessages from "@/components/common/ErrorAlertMessages";
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
@@ -39,6 +40,7 @@ async function postChatById(id, data) {
 
 export default function AskAdam({ params }) {
     const [message, setMessage] = useState("");
+    const [showErrorPopup, setShowErrorPopup] = useState(false)
 
     const {
         chatsData,
@@ -71,10 +73,10 @@ export default function AskAdam({ params }) {
             setMessage("");
         } catch (error) {
             console.error("Error submitting chat:", error);
-            alert(
-                error?.response?.data?.message ||
-                "An error occurred while submitting your question."
-            );
+            // alert(
+            //     error?.response?.data?.message ||
+            //     "An error occurred while submitting your question."
+            // );
         }
     };
 
@@ -82,16 +84,13 @@ export default function AskAdam({ params }) {
         return <div className="text-white text-center mt-10">Loading...</div>;
     }
 
-    if (ticketError || postChatError || getChatError) {
-        return (
-            <div className="text-center mt-10 text-red-500">
-                {ticketError?.message ||
-                    postChatError?.message ||
-                    getChatError?.message ||
-                    "An error occurred."}
-            </div>
-        );
-    }
+    // if (ticketError || postChatError || getChatError) {
+    //     return (
+    //         setShowErrorPopup(true)
+    //     );
+    // }
+
+
 
     const event = ticketDetails?.event || {};
     const eventImage = event?.image ? `${event.image}` : "";
@@ -101,9 +100,22 @@ export default function AskAdam({ params }) {
         : "";
     console.log(ticketDetails.ti);
 
+    useEffect(() => {
+        if ((ticketError || postChatError || getChatError)) {
+            setShowErrorPopup(true);
+        }
+    }, [ticketError || postChatError || getChatError]); // runs only when condition changes
 
     return (
         <>
+            {showErrorPopup && (
+                <ErrorAlertMessages
+                    message="A Question was asked within the last 5 minutes. Please wait before asking another question."
+                    closeErrorsMessageFunc={() => setShowErrorPopup(false)}
+                />
+            )}
+
+
             <div className="flex flex-col items-start justify-start min-h-screen bg-transparent relative top-0">
                 {/* Alert Messages Section */}
                 {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
