@@ -8,7 +8,7 @@ import Background from "../../components/Common/Background";
 import EventTitle from "@/components/Common/EventTitle";
 import WhiteContainer from "@/components/Common/WhiteContainer";
 import SectionHeader from "@/components/Common/SectionHeader";
-import ErrorAlertMessages from "@/components/common/ErrorAlertMessages";
+import ErrorAlertMessages from "@/components/Common/ErrorAlertMessages";
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
