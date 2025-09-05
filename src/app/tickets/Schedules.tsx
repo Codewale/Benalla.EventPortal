@@ -102,10 +102,7 @@ export default function Schedules({ params }) {
                                             : ""
                                             })`}
                                     />
-                                    {/* <div
-key={day}
-className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-gray-200 p-4"
-> */}
+
                                     <WhiteContainer key={day}>
                                         <table className="w-full text-xs">
                                             <thead>
@@ -134,11 +131,14 @@ className="w-full max-w-2xl bg-white rounded-2xl shadow-lg mb-8 border-2 border-
                                                 {items.map((item) => (
                                                     <tr key={item.id} className="even:bg-gray-50">
                                                         <td className="px-1 border-b border-b-gray-500 text-black textSizeCommon">
-                                                            {item.eventNumber}
-                                                            <span
-                                                                className="inline-block w-3 h-3 rounded-full align-middle ml-2"
-                                                                style={{ backgroundColor: item.displayColour || "rgba(0,0,0,0)" }}
-                                                            ></span>
+                                                            <div className="flex flex-row ">
+                                                                <div className="w-[50%]">{item.eventNumber}</div>
+                                                                <div className="w-[50%]">
+                                                                    <span className="inline-block w-3 h-3 rounded-full align-middle ml-2"
+                                                                        style={{ backgroundColor: item.displayColour || "rgba(0,0,0,0)" }}
+                                                                    ></span>
+                                                                </div>
+                                                            </div>
                                                         </td>
                                                         <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{item.item}</td>
                                                         <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>{formatTimeFromISOString(item.startTime, { timeZone: "UTC" })}</td>
