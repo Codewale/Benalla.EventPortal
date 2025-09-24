@@ -131,6 +131,80 @@ async function getEventSchedules(eventId, headers, baseUrl) {
   }));
 }
 
+async function getBookings(ticketId, headers, baseUrl) {
+  const select = [
+    'wdrgns_booking',
+    '_wdrgns_contactid_value',
+    '_wdrgns_masterticketid_value',
+    'wdrgns_from',
+    'wdrgns_to'
+  ].join(',');
+
+  const filter = `_wdrgns_masterticketid_value eq ${ticketId}`;
+  const url = `${baseUrl}/wdrgns_bookings?$filter=${filter}&$select=${select}`;
+
+  const res = await axios.get(url, { headers });
+  const rawBookings = res.data.value || [];
+
+  return rawBookings
+    .map(b => ({
+      booking: b.wdrgns_booking || "",
+      contactId: b._wdrgns_contactid_value || "",
+      masterTicketId: b._wdrgns_masterticketid_value || "",
+      from: b.wdrgns_from || "",
+      to: b.wdrgns_to || ""
+    }));
+}
+
+async function getVehicle(vehicleId) {
+  const token = await getAccessToken();
+  const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
+  const headers = { Authorization: `Bearer ${token}` };
+
+  const select = [
+    'wdrgns_primaryidentifier',
+    'wdrgns_vin',
+    'wdrgns_chassisnumber',
+    'wdrgns_registrationplate',
+    'wdrgns_racenumber',
+    '_wdrgns_nominatedvehicletypeid_value'
+  ].join(',');
+
+  const filter = `wdrgns_vehicleid eq ${vehicleId}`;
+  const url = `${baseUrl}/wdrgns_vehicles?$filter=${filter}&$select=${select}`;
+
+  const res = await axios.get(url, { headers });
+  const vehicles = res.data.value || [];
+
+  if (vehicles.length === 0) return null; // No vehicle found
+
+  const vehicle = vehicles[0];
+  const nominatedVehicle = await getNominatedVehicleName(
+    vehicle._wdrgns_nominatedvehicletypeid_value,
+    headers,
+    baseUrl
+  );
+
+  return {
+    vehicle: vehicle.wdrgns_primaryidentifier || "",
+    vin: vehicle.wdrgns_vin || "",
+    chassis: vehicle.wdrgns_chassisnumber || "",
+    registration: vehicle.wdrgns_registrationplate || "",
+    race: vehicle.wdrgns_racenumber || "",
+    type: nominatedVehicle || ""
+  };
+}
+
+async function getNominatedVehicleName(nominatedVehicleId, headers, baseUrl) {
+  console.log("Vehicle Id :", nominatedVehicleId);
+
+  if (!nominatedVehicleId) return "";
+  const url = `${baseUrl}/wdrgns_vehicletypes(${nominatedVehicleId})?$select=wdrgns_type`;
+  const res = await axios.get(url, { headers });
+  return res.data.wdrgns_type || "";
+}
+
+
 async function getTicketLinks(ticketTypeId, headers, baseUrl) {
   const filter = `statecode eq 0 and _wdrgns_tickettype_value eq '${ticketTypeId}'`;
   const select = 'wdrgns_displayorder,wdrgns_name,wdrgns_url,wdrgns_linkimage,wdrgns_type';
@@ -142,6 +216,8 @@ async function getTicketLinks(ticketTypeId, headers, baseUrl) {
       'Prefer': 'odata.include-annotations="OData.Community.Display.V1.FormattedValue"',
     },
   });
+
+
 
   const rawLinks = res.data.value || [];
 
@@ -214,7 +290,6 @@ export async function GET(req, { params }) {
   const token = await getAccessToken();
   const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
   const headers = { Authorization: `Bearer ${token}` };
-
   const ticketRes = await axios.get(`${baseUrl}/wdrgns_tickets(${ticketId})`, { headers });
   const ticket = ticketRes.data;
 
@@ -264,7 +339,10 @@ export async function GET(req, { params }) {
     eventImageBase64,
     eventLogoBase64,
     eventMapBase64,
-    schedules
+    schedules,
+    bookings,
+    vehicle,
+    vehicleImage
   ] = await Promise.all([
     selectedEvent._wdrgns_promoterid_value
       ? axios.get(`${baseUrl}/accounts(${selectedEvent._wdrgns_promoterid_value})?$select=name,accountid`, { headers }).then(r => r.data)
@@ -290,7 +368,14 @@ export async function GET(req, { params }) {
     selectedEvent.wdrgns_eventmap
       ? fetchImageAsBase64('wdrgns_events', selectedEvent.wdrgns_eventid, 'wdrgns_eventmap', headers, baseUrl)
       : null,
-    getEventSchedules(selectedEvent.wdrgns_eventid, headers, baseUrl)
+    getEventSchedules(selectedEvent.wdrgns_eventid, headers, baseUrl),
+    getBookings(ticketId, headers, baseUrl),
+    ticket._wdrgns_nominatedvehicleid_value ?
+      getVehicle(ticket._wdrgns_nominatedvehicleid_value)
+      : [],
+    ticket._wdrgns_nominatedvehicleid_value ?
+      fetchImageAsBase64('wdrgns_vehicles', ticket._wdrgns_nominatedvehicleid_value, 'wdrgns_image', headers, baseUrl)
+      : []
   ]);
   const suburbCoordinates = location
     ? await getSuburbCoordinates(
@@ -440,10 +525,13 @@ export async function GET(req, { params }) {
     eventSchedules: schedules,
     ticketLinks,
     primarySponsors,
-    sponsors
+    sponsors,
+    bookings,
+    vehicle,
+    vehicleImage
   };
 
-  // console.log("Result", result);
+  console.log("Result", result);
 
 
   return NextResponse.json(result, {
