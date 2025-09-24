@@ -13,6 +13,8 @@ const pages = [
     { id: "links", component: dynamic(() => import("./TicketLinksnOpenings")) },
     { id: "askAdam", component: dynamic(() => import("./AskAdam")) },
     { id: "maps", component: dynamic(() => import("./Maps")) },
+    { id: "bookings", component: dynamic(() => import("./Booking")) },
+    { id: "vehicle", component: dynamic(() => import("./Vehicle")) },
 ];
 
 export default function Main({ params }) {

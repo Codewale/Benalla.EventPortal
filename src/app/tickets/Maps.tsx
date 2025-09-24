@@ -91,7 +91,7 @@ export default function Maps({ params }) {
                                             />
                                         ) : (
                                             <span className="text-gray-500 italic">
-                                                Map of the location
+                                                Map of the location is not available
                                             </span>
                                         )}
                                     </WhiteContainer>

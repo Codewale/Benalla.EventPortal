@@ -44,6 +44,8 @@ export default function Footer({
                             "Information",
                             "Ask Adam",
                             "Site maps",
+                            "Bookings",
+                            "Vehicle details"
                         ];
                         const pageIndex = navigationPageNo - 1;
                         const title =
