@@ -66,6 +66,10 @@ export default function PromoterNsopnsors({ params }) {
 
     return (
         <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
+            {Array.isArray(alertMessageList) && alertMessageList.length > 0 && (
+                <AlertMessages alertMessageList={alertMessageList || []} />
+            )}
+
             <Background eventImage={eventImage}>
                 <div className="shadow-2xl w-full p-4">
                     <div className="md:px-12 md:pt-12 pb-0">
