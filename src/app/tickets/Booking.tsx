@@ -87,6 +87,9 @@ export default function Maps({ params }) {
                                                 Booking
                                             </th>
                                             <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
+                                                Facility
+                                            </th>
+                                            <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
                                                 From
                                             </th>
                                             <th className={`px-1 font-semibold border-b border-gray-200 text-left textSizeCommon ${archivoBlack.className}`}>
@@ -99,6 +102,9 @@ export default function Maps({ params }) {
                                             <tr key={index} className="even:bg-gray-50">
                                                 <td className="px-1 border-b border-b-gray-500 text-black textSizeCommon">
                                                     {bookingItem.booking}
+                                                </td>
+                                                <td className="px-1 border-b border-b-gray-500 text-black textSizeCommon">
+                                                    {bookingItem.facility}
                                                 </td>
                                                 <td className={`px-1 border-b border-b-gray-500 text-black font-semibold textSizeCommon ${spaceGrotesk.className}`}>
                                                     {new Date(bookingItem.from).toLocaleDateString("en-AU", {
