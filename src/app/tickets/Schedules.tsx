@@ -2,7 +2,6 @@
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/components/Common/Alert";
 import React from "react";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
 import SectionHeader from "@/components/Common/SectionHeader";
 import WhiteContainer from "@/components/Common/WhiteContainer";
 import Background from "@/components/Common/Background";
@@ -39,25 +38,12 @@ export default function Schedules({ params }) {
         );
     }
 
-
-
-    const ticket = ticketDetails.ticket;
-    const ticketType = ticketDetails.ticketType;
-    const contact = ticketDetails.contact;
     const event = ticketDetails.event;
     const promoter = ticketDetails.promoter;
-    const location = ticketDetails.location;
-    const sponsors = ticketDetails.sponsors;
-    const primarySponsors = ticketDetails.primarySponsors;
     const qrCode = ticketDetails.qrCode;
     const eventSchedules = ticketDetails.eventSchedules;
     const alertMessageList = ticketDetails.eventAlerts;
-
     const eventImage = event?.image ? `${event.image}` : "";
-    const eventLogo = event?.logo ? `${event.logo}` : "";
-    const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
-    const locationMap = event?.map ? `${event.map}` : "";
-    const qr = qrCode ? `${qrCode}` : "";
 
     const groupedByDay = eventSchedules.reduce((acc, item) => {
         const day = new Date(item.startTime).toLocaleDateString("en-US", {
@@ -70,7 +56,6 @@ export default function Schedules({ params }) {
         return acc;
     }, {});
 
-    // console.log(eventImage);
     return (
         <>
             <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">

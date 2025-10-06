@@ -73,10 +73,6 @@ export default function AskAdam({ params }) {
             setMessage("");
         } catch (error) {
             console.error("Error submitting chat:", error);
-            // alert(
-            //     error?.response?.data?.message ||
-            //     "An error occurred while submitting your question."
-            // );
         }
     };
 
@@ -84,22 +80,8 @@ export default function AskAdam({ params }) {
         return <div className="text-white text-center mt-10">Loading...</div>;
     }
 
-    // if (ticketError || postChatError || getChatError) {
-    //     return (
-    //         setShowErrorPopup(true)
-    //     );
-    // }
-
-
-
     const event = ticketDetails?.event || {};
     const eventImage = event?.image ? `${event.image}` : "";
-    const eventLogo = event?.logo ? `${event.logo}` : "";
-    const promoterLogo = ticketDetails?.ticket?.promoter?.logo
-        ? `${ticketDetails.ticket.promoter.logo}`
-        : "";
-    console.log(ticketDetails.ti);
-
     useEffect(() => {
         if ((ticketError || postChatError || getChatError)) {
             setShowErrorPopup(true);
@@ -182,9 +164,6 @@ export default function AskAdam({ params }) {
                                 </div>
                             </WhiteContainer>
                         </div>
-
-
-
                     </div>
                 </Background>
             </div>

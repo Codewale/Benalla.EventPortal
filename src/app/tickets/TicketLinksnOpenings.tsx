@@ -1,13 +1,9 @@
-// "use client";
-
-import axios from "axios";
 import React from "react";
 import Background from "@/components/Common/Background";
 import WhiteContainer from "@/components/Common/WhiteContainer";
 import EventTitle from "@/components/Common/EventTitle";
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
 import AlertMessages from "@/components/Common/Alert";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
 import Loader from "@/components/Common/Loader";
 import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
 
@@ -39,26 +35,10 @@ export default function TicketLinksnOpenings({ params }) {
         );
     }
 
-
-
-    const ticket = ticketDetails.ticket;
-    const ticketType = ticketDetails.ticketType;
-    const contact = ticketDetails.contact;
     const event = ticketDetails.event;
-    const promoter = ticketDetails.promoter;
-    const location = ticketDetails.location;
-    const sponsors = ticketDetails.sponsors;
-    const primarySponsors = ticketDetails.primarySponsors;
-    const qrCode = ticketDetails.qrCode;
-    const eventSchedules = ticketDetails.eventSchedules;
     const ticketLinks = ticketDetails.ticketLinks;
     const alertMessageList = ticketDetails.eventAlerts;
-
     const eventImage = event?.image ? `${event.image}` : "";
-    const eventLogo = event?.logo ? `${event.logo}` : "";
-    const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
-    const locationMap = event?.map ? `${event.map}` : "";
-    const qr = qrCode ? `${qrCode}` : "";
 
     const getLinksByType = (type) =>
         ticketLinks.filter((link) => link.typeLabel === type);
@@ -184,13 +164,11 @@ export default function TicketLinksnOpenings({ params }) {
 
                             {/* Section for "Advertisement" ticket links */}
                             {getLinksByType("Advertising").length > 0 && (
-                                // <div className="bg-white rounded-xl shadow-lg w-full p-3 mb-4 ">
                                 <WhiteContainer>
                                     <table className="w-full">
                                         <tbody>
                                             {getLinksByType("Advertising").map((item) => (
                                                 <React.Fragment key={item.displayOrder}>
-                                                    {/* Heading row */}
                                                     <tr>
                                                         <td colSpan={2} className="py-0.5 text-center">
                                                             <span className={`font-bold textSizeCommon uppercase text-red-700 ${archivoBlack.className}`}>
@@ -230,10 +208,8 @@ export default function TicketLinksnOpenings({ params }) {
                                         </tbody>
                                     </table>
                                 </WhiteContainer>
-                                // </div>
                             )}
                             {/* Opening Hours Card */}
-                            {/* <div className="bg-white rounded-xl shadow-lg w-full p-6"> */}
                             <WhiteContainer>
                                 <div className="grid grid-cols-2 gap-4 w-full">
                                     <div>
@@ -270,9 +246,7 @@ export default function TicketLinksnOpenings({ params }) {
                                     </div>
                                 </div>
                             </WhiteContainer>
-                            {/* </div> */}
                         </div>
-
                     </div>
                 </Background>
             </div>

@@ -43,8 +43,6 @@ export default async function TicketPage({ params }) {
     //  displayOrderDetails = await getDisplayOrder(params.id);
 
   } catch (error) {
-    console.log(error);
-
     return (
       <div className="text-center mt-10 text-red-500">
         Error loading event.
@@ -65,9 +63,6 @@ export default async function TicketPage({ params }) {
   const sponsors = eventWithText.data.sponsors;
   const primarySponsors = eventWithText.data.primarySponsors;
   const eventSchedules = eventWithText.data.eventSchedules;
-
-
-  console.log("Event :", event);
 
   const eventImage = event?.image ? `${event.image}` : "";
   const eventLogo = event?.logo ? `${event.logo}` : "";

@@ -1,7 +1,6 @@
 // "use client";
 
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import axios from "axios";
 import React from "react";
 import AlertMessages from "@/components/Common/Alert";
 import Background from "@/components/Common/Background";
@@ -32,16 +31,9 @@ export default function FirstInfo({ params }) {
   const event = ticketDetails.event;
   const promoter = ticketDetails.promoter;
   const location = ticketDetails.location;
-  const sponsors = ticketDetails.sponsors;
-  const primarySponsors = ticketDetails.primarySponsors;
   const qrCode = ticketDetails.qrCode;
-  const eventSchedules = ticketDetails.eventSchedules;
   const alertMessageList = ticketDetails.eventAlerts;
-
   const eventImage = event?.image ? `${event.image}` : "";
-  const eventLogo = event?.logo ? `${event.logo}` : "";
-  const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
-  const locationMap = event?.map ? `${event.map}` : "";
   const qr = qrCode ? `${qrCode}` : "";
 
   return (

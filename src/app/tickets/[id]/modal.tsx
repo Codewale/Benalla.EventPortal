@@ -17,19 +17,12 @@ async function postChatById(id: string, data: any) {
 }
 
 export default function ChatModal({ params }) {
-  // const [modalOpen, setModalOpen] = useState(false);
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
 
-  // const handleToggleModal = () => {
-  //   // setModalOpen((prevState) => !prevState);
-  //   setMessage("");
-  //   // setData([]); // Clear data when modal is closed
-  // };
   async function getQues() {
     try {
       const resp = await getChats(params.id);
-      console.log({ resp });
       if (resp) {
         setData(resp?.data);
       }

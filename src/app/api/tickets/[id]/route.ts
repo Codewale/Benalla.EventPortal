@@ -196,8 +196,6 @@ async function getVehicle(vehicleId) {
 }
 
 async function getNominatedVehicleName(nominatedVehicleId, headers, baseUrl) {
-  console.log("Vehicle Id :", nominatedVehicleId);
-
   if (!nominatedVehicleId) return "";
   const url = `${baseUrl}/wdrgns_vehicletypes(${nominatedVehicleId})?$select=wdrgns_type`;
   const res = await axios.get(url, { headers });
@@ -530,9 +528,6 @@ export async function GET(req, { params }) {
     vehicle,
     vehicleImage
   };
-
-  console.log("Result", result);
-
 
   return NextResponse.json(result, {
     status: 200,

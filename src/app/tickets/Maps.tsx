@@ -3,16 +3,12 @@
 // import axios from "axios";
 import React from "react";
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-
 import SectionHeader from "@/components/Common/SectionHeader";
 import WhiteContainer from "@/components/Common/WhiteContainer";
 import Background from "@/components/Common/Background";
 import EventTitle from "@/components/Common/EventTitle";
-
-
 import mapsImage from "@/images/WMR Aerial Map v4 2024-01.jpg";
 import AlertMessages from "@/components/Common/Alert";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
 import Loader from "@/components/Common/Loader";
 
 function formatTimeFromISOString(isoString, options = {}) {
@@ -43,25 +39,13 @@ export default function Maps({ params }) {
         );
     }
 
-    const ticket = ticketDetails.ticket;
-    const ticketType = ticketDetails.ticketType;
-    const contact = ticketDetails.contact;
     const event = ticketDetails.event;
     const promoter = ticketDetails.promoter;
-    const location = ticketDetails.location;
-    const sponsors = ticketDetails.sponsors;
-    const primarySponsors = ticketDetails.primarySponsors;
     const qrCode = ticketDetails.qrCode;
-    const eventSchedules = ticketDetails.eventSchedules;
     const alertMessageList = ticketDetails.eventAlerts;
-
     const eventImage = event?.image ? `${event.image}` : "";
-    const eventLogo = event?.logo ? `${event.logo}` : "";
-    const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
     const locationMap = event?.map ? `${event.map}` : "";
-    const qr = qrCode ? `${qrCode}` : "";
 
-    console.log(alertMessageList);
     return (
         <>
 

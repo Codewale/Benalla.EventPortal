@@ -101,7 +101,6 @@ export async function POST(req, { params }) {
       );
     }
     else {
-      console.log("OK — Last record is older than 5 minutes. Proceeding...");
       const baseUrl = `${process.env.RESOURCE}/api/data/v9.2`;
       const headers = {
         Authorization: `Bearer ${token}`,
@@ -112,9 +111,6 @@ export async function POST(req, { params }) {
       };
 
       const firstAskAdamId = await getFirstAskAdamRecordId(ticketId, token);
-
-      console.log(`First AskAdam record ID: ${firstAskAdamId}`);
-
       const createPayload = {
         wdrgns_question: body.questionText,
         "wdrgns_ticket@odata.bind": `/wdrgns_tickets(${ticketId})`,
@@ -124,25 +120,13 @@ export async function POST(req, { params }) {
         createPayload[
           "wdrgns_askadam@odata.bind"
         ] = `/wdrgns_askadams(${firstAskAdamId})`;
-        console.log(
-          `Existing AskAdam record found: ${firstAskAdamId}, setting as lookup`
-        );
-      } else {
-        console.log(
-          `No existing AskAdam records found — creating first question without lookup`
-        );
-      }
 
+      }
       try {
         const res = await axios.post(
           `${baseUrl}/wdrgns_askadams`,
           createPayload,
           { headers }
-        );
-        console.log("wdrgns_askadam record created successfully.");
-        console.log(
-          "Created record location:",
-          res.headers["odata-entityid"] || res.headers["location"]
         );
         return NextResponse.json({
           message: "AskAdam record created successfully",
@@ -176,11 +160,7 @@ export async function POST(req, { params }) {
         createPayload,
         { headers }
       );
-      console.log("wdrgns_askadam record created successfully.");
-      console.log(
-        "Created record location:",
-        res.headers["odata-entityid"] || res.headers["location"]
-      );
+
       return NextResponse.json({
         message: "AskAdam record created successfully",
         id: res.data.wdrgns_askadamid,

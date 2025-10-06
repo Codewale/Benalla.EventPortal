@@ -1,5 +1,5 @@
 import React from "react";
-import { spaceGrotesk, archivoBlack } from '@/fonts/fonts'
+import { archivoBlack } from '@/fonts/fonts'
 
 interface AlertItem {
     id: string;

@@ -1,8 +1,4 @@
-// "use client";
-
 import { useTicketAndDisplayData } from "@/hooks/useFetch";
-import { Space_Grotesk, Archivo_Black } from "next/font/google";
-// import axios from "axios";
 import React from "react";
 import AlertMessages from "@/components/Common/Alert";
 
@@ -11,7 +7,7 @@ import WhiteContainer from "@/components/Common/WhiteContainer";
 import Background from "@/components/Common/Background";
 import EventTitle from "@/components/Common/EventTitle";
 import Loader from "@/components/Common/Loader";
-import { archivoBlack, spaceGrotesk } from '@/fonts/fonts'
+import { spaceGrotesk } from '@/fonts/fonts'
 
 function formatTimeFromISOString(isoString, options = {}) {
     const date = new Date(isoString);
@@ -42,27 +38,11 @@ export default function PromoterNsopnsors({ params }) {
         );
     }
 
-
-
-    const ticket = ticketDetails.ticket;
-    const ticketType = ticketDetails.ticketType;
-    const contact = ticketDetails.contact;
     const event = ticketDetails.event;
-    const promoter = ticketDetails.promoter;
-    const location = ticketDetails.location;
-    const sponsors = ticketDetails.sponsors;
-    const primarySponsors = ticketDetails.primarySponsors;
-    const qrCode = ticketDetails.qrCode;
-    const eventSchedules = ticketDetails.eventSchedules;
     const alertMessageList = ticketDetails.eventAlerts;
     const vehicleData = ticketDetails.vehicle
     const vehicleImage = ticketDetails.vehicleImage
     const eventImage = event?.image ? `${event.image}` : "";
-    const eventLogo = event?.logo ? `${event.logo}` : "";
-    const promoterLogo = promoter?.logo ? `${promoter.logo}` : "";
-    const locationMap = event?.map ? `${event.map}` : "";
-    const qr = qrCode ? `${qrCode}` : "";
-
 
     return (
         <div className="flex flex-col items-start justify-start min-h-screen bg-black relative top-0">
