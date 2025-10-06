@@ -131,13 +131,23 @@ async function getEventSchedules(eventId, headers, baseUrl) {
   }));
 }
 
+async function fetchFacilityName(facilityId, headers, baseUrl) {
+  const select = ['wdrgns_facility'].join(',');
+  const filter = `wdrgns_facilityid eq ${facilityId}`;
+  const url = `${baseUrl}/wdrgns_facilities?$filter=${filter}&$select=${select}`;
+
+  const res = await axios.get(url, { headers });
+  return res.data.value?.[0]?.wdrgns_facility || "";
+}
+
 async function getBookings(ticketId, headers, baseUrl) {
   const select = [
     'wdrgns_booking',
     '_wdrgns_contactid_value',
     '_wdrgns_masterticketid_value',
     'wdrgns_from',
-    'wdrgns_to'
+    'wdrgns_to',
+    '_wdrgns_facilityid_value'
   ].join(',');
 
   const filter = `_wdrgns_masterticketid_value eq ${ticketId}`;
@@ -146,14 +156,20 @@ async function getBookings(ticketId, headers, baseUrl) {
   const res = await axios.get(url, { headers });
   const rawBookings = res.data.value || [];
 
-  return rawBookings
-    .map(b => ({
+  const bookings = await Promise.all(
+    rawBookings.map(async (b) => ({
       booking: b.wdrgns_booking || "",
       contactId: b._wdrgns_contactid_value || "",
       masterTicketId: b._wdrgns_masterticketid_value || "",
       from: b.wdrgns_from || "",
-      to: b.wdrgns_to || ""
-    }));
+      to: b.wdrgns_to || "",
+      facility: b._wdrgns_facilityid_value
+        ? await fetchFacilityName(b._wdrgns_facilityid_value, headers, baseUrl)
+        : "",
+    }))
+  );
+
+  return bookings;
 }
 
 async function getVehicle(vehicleId) {
