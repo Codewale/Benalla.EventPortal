@@ -6,6 +6,7 @@ export default function Footer({
     handleIncrement,
     navigationPageNo,
     totalPages,
+    pageTitle,
 }) {
     return (
         <>
@@ -37,19 +38,8 @@ export default function Footer({
                 </button>
                 <p className={`text-white text-sm font-semibold ${spaceGrotesk.className}`}>
                     {(() => {
-                        const pageTitles = [
-                            "Entry Scan",
-                            "Schedule",
-                            "With thanks to",
-                            "Information",
-                            "Ask Adam",
-                            "Site maps",
-                            "Bookings",
-                            "Vehicle details"
-                        ];
                         const pageIndex = navigationPageNo - 1;
-                        const title =
-                            pageTitles[pageIndex] || `Page ${navigationPageNo}`;
+                        const title = pageTitle || `Page ${navigationPageNo}`;
                         return `Page ${navigationPageNo} of ${totalPages} - ${title}`;
                     })()}
                 </p>
