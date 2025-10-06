@@ -50,7 +50,7 @@ export default function Footer({
                         const pageIndex = navigationPageNo - 1;
                         const title =
                             pageTitles[pageIndex] || `Page ${navigationPageNo}`;
-                        return `Page ${navigationPageNo} of ${pageTitles.length} - ${title}`;
+                        return `Page ${navigationPageNo} of ${totalPages} - ${title}`;
                     })()}
                 </p>
                 <button
